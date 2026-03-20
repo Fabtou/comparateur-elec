@@ -9,21 +9,22 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg:#F7F5F0; --surface:#fff; --surface2:#F2EFE9;
-      --border:#E2DDD4; --border2:#C8C2B5;
-      --text:#1A1714; --muted:#7A7268; --faint:#B0A99E;
-      --accent:#185FA5; --accent-bg:#EBF3FC;
-      --green:#276749; --green-bg:#E8F5EE;
-      --red:#9B1C1C; --red-bg:#FEE2E2;
-      --amber:#92400E; --amber-bg:#FEF3C7;
-      --best:#0F766E; --best-bg:#CCFBF1;
-      --r:10px; --rs:6px;
-      --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
+      --bg:#F7F5F0;--surface:#fff;--surface2:#F2EFE9;
+      --border:#E2DDD4;--border2:#C8C2B5;
+      --text:#1A1714;--muted:#7A7268;--faint:#B0A99E;
+      --accent:#185FA5;--accent-bg:#EBF3FC;
+      --green:#276749;--green-bg:#E8F5EE;
+      --red:#9B1C1C;--red-bg:#FEE2E2;
+      --amber:#92400E;--amber-bg:#FEF3C7;
+      --best:#0F766E;--best-bg:#CCFBF1;
+      --r:10px;--rs:6px;
+      --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
 
-    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
+    /* Header */
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
     .logo{display:flex;align-items:center;gap:10px}
     .logo-icon{width:30px;height:30px;background:var(--text);border-radius:var(--rs);display:flex;align-items:center;justify-content:center}
     .logo-icon svg{width:16px;height:16px;fill:var(--bg)}
@@ -31,62 +32,66 @@
     .header-sub{font-size:12px;color:var(--muted)}
     #badge-date{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;background:var(--green-bg);color:var(--green);border:1px solid #A7F3D0}
 
-    main{max-width:1280px;margin:0 auto;padding:1.75rem 1.5rem 4rem}
+    main{max-width:1300px;margin:0 auto;padding:1.5rem 1.5rem 5rem}
 
-    /* ── Simulator ── */
-    .sim{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem 2rem;margin-bottom:1.5rem}
+    /* Simulator */
+    .sim{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.8rem;margin-bottom:1.25rem}
     .sim-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
-    .sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem 2.5rem;align-items:start}
+    .sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem 2rem;align-items:start}
     .sim-field label{display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
     .input-wrap{position:relative}
-    .input-wrap input[type=number]{width:100%;font-family:var(--mono);font-size:24px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 36px 4px 0;outline:none;-moz-appearance:textfield}
-    .input-wrap input[type=number]::-webkit-outer-spin-button,.input-wrap input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+    .input-wrap input[type=number]{width:100%;font-family:var(--mono);font-size:22px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 40px 4px 0;outline:none;-moz-appearance:textfield}
+    .input-wrap input[type=number]::-webkit-outer-spin-button,
+    .input-wrap input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     .input-wrap input[type=number]:focus{border-bottom-color:var(--accent)}
     .input-unit{position:absolute;right:0;bottom:7px;font-size:13px;color:var(--muted);font-family:var(--mono)}
-    .slider-val{font-family:var(--mono);font-size:24px;display:flex;align-items:baseline;gap:4px}
-    .slider-val .u{font-size:13px;color:var(--muted)}
-    .slider-wrap{margin-top:.5rem}
+    /* kVA select */
+    .kva-select{font-family:var(--mono);font-size:22px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 4px 4px 0;outline:none;width:100%;cursor:pointer}
+    .kva-select:focus{border-bottom-color:var(--accent)}
+    /* HC input direct */
+    .hc-row{display:flex;align-items:baseline;gap:8px;margin-bottom:.5rem}
+    .hc-row input[type=number]{font-family:var(--mono);font-size:22px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 0 4px;outline:none;width:60px;text-align:right;-moz-appearance:textfield}
+    .hc-row input[type=number]::-webkit-outer-spin-button,
+    .hc-row input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+    .hc-row input[type=number]:focus{border-bottom-color:var(--accent)}
+    .hc-unit{font-size:13px;color:var(--muted);font-family:var(--mono)}
     .slider-wrap input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;border:none;padding:0;cursor:pointer}
     .slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--text);cursor:pointer;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--border2)}
     .slider-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);font-family:var(--mono);margin-top:3px}
     .sim-hint{margin-top:.6rem;font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:var(--surface2);border-radius:var(--rs)}
 
-    /* ── Summary cards ── */
-    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem}
-    .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem}
-    .scard-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
-    .scard-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--text)}
+    /* Summary */
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.25rem}
+    .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.85rem 1rem}
+    .scard-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+    .scard-val{font-family:var(--mono);font-size:19px;font-weight:500;color:var(--text)}
     .scard-sub{font-size:11px;color:var(--muted);margin-top:2px}
 
-    /* ── Filters / sort ── */
-    .toolbar{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
-    .toolbar-sep{width:1px;height:18px;background:var(--border);margin:0 .25rem}
+    /* Toolbar */
+    .toolbar{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .toolbar-sep{width:1px;height:16px;background:var(--border);margin:0 .2rem}
     .flabel{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
-    .fbtn{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .12s}
+    .fbtn{font-family:var(--sans);font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .12s}
     .fbtn:hover{border-color:var(--border2);color:var(--text)}
     .fbtn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
-    .sbtn{font-family:var(--sans);font-size:12px;padding:4px 10px;border-radius:var(--rs);border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
-    .sbtn:hover{background:var(--surface2);color:var(--text)}
-    .sbtn.active{background:var(--surface);border-color:var(--border);color:var(--text)}
 
-    /* ── Table ── */
+    /* Table */
     .tscroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
-    table{width:100%;border-collapse:collapse;background:var(--surface);min-width:900px}
-    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;cursor:pointer;user-select:none}
-    thead th:first-child{text-align:left;min-width:200px;cursor:default}
-    thead th.th-c{text-align:center;cursor:default}
+    table{width:100%;border-collapse:collapse;background:var(--surface);min-width:860px}
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+    thead th:first-child{text-align:left;min-width:190px}
+    thead th.th-c{text-align:center}
+    thead th.sortable{cursor:pointer;user-select:none;transition:color .1s}
     thead th.sortable:hover{color:var(--text)}
     thead th.sorted{color:var(--accent)}
     tbody tr{border-bottom:1px solid var(--border);transition:background .08s}
     tbody tr:last-child{border-bottom:none}
-    tbody tr:hover td{background:var(--surface2)}
+    tbody tr:hover td{background:var(--surface2) !important}
     tbody tr.row-trv td{background:var(--accent-bg)}
-    tbody tr.row-trv:hover td{background:#D6E8F8}
-    tbody tr.row-hc td:first-child{border-left:3px solid transparent}
-    tbody tr.row-hc-available td:first-child{border-left-color:var(--accent)}
-    tbody tr.row-hc-na td{opacity:.55}
-    tbody tr.row-best-base td:first-child,tbody tr.row-best-hc td:first-child{border-left:3px solid var(--best)}
-    td{padding:10px 14px;font-size:13px;text-align:right;vertical-align:middle;background:var(--surface)}
+    tbody tr.row-hc-avail td:first-child{border-left:3px solid var(--accent)}
+    tbody tr.row-hc-na td{opacity:.5}
+    tbody tr.row-best td:first-child{border-left:3px solid var(--best)}
+    td{padding:10px 13px;font-size:13px;text-align:right;vertical-align:middle;background:var(--surface)}
     td:first-child{text-align:left}
 
     .prov-name{font-weight:500;font-size:13px;color:var(--text)}
@@ -96,10 +101,9 @@
     .pill-hc{background:var(--accent-bg);color:var(--accent)}
     .pill-na{background:var(--surface2);color:var(--faint);border:1px solid var(--border)}
 
-    .num{font-family:var(--mono);font-size:13px;color:var(--text)}
-    .num-sub{font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:1px}
-    .num-big{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--text)}
-    .na-cell{color:var(--faint);font-size:12px}
+    .num{font-family:var(--mono);font-size:13px}
+    .num-big{font-family:var(--mono);font-size:15px;font-weight:500}
+    .na{color:var(--faint);font-size:12px}
 
     .saving{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:500;padding:3px 7px;border-radius:var(--rs)}
     .sav-pos{background:var(--green-bg);color:var(--green)}
@@ -111,21 +115,56 @@
     .bg-gray{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
     .type-fixe{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:#E0F2FE;color:#075985;text-transform:uppercase;letter-spacing:.04em}
     .type-indexe{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
-
     .best-tag{display:inline-block;font-size:9px;font-weight:500;padding:2px 6px;background:var(--best-bg);color:var(--best);border-radius:4px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
 
-    .footnote{margin-top:1.25rem;font-size:11px;color:var(--faint);line-height:1.7}
+    /* Guide section */
+    .guide{margin-top:3rem;border-top:1px solid var(--border);padding-top:2.5rem}
+    .guide-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:.4rem;letter-spacing:-.02em}
+    .guide-sub{font-size:14px;color:var(--muted);margin-bottom:2.5rem}
+    .guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2.5rem}
+    @media(max-width:700px){.guide-grid{grid-template-columns:1fr}}
+    .gcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+    .gcard-head{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+    .gcard-icon{width:36px;height:36px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+    .icon-fixe{background:#E0F2FE;color:#075985}
+    .icon-indexe{background:var(--amber-bg);color:var(--amber)}
+    .gcard-name{font-size:15px;font-weight:500}
+    .gcard-tag{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;display:inline-block;margin-top:3px}
+    .gcard p{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:.75rem}
+    .gcard p:last-child{margin-bottom:0}
+    .pro-con{margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .pros,.cons{padding:.75rem;border-radius:var(--rs)}
+    .pros{background:var(--green-bg)}
+    .cons{background:var(--red-bg)}
+    .pc-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+    .pros .pc-title{color:var(--green)}
+    .cons .pc-title{color:var(--red)}
+    .pc-item{font-size:12px;line-height:1.5;margin-bottom:.2rem}
+    .pros .pc-item{color:#2D6A4F}
+    .cons .pc-item{color:#7F1D1D}
+    .guide-faq{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem}
+    .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+    .faq-q{width:100%;text-align:left;padding:1rem 1.25rem;font-size:14px;font-weight:500;color:var(--text);background:transparent;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;font-family:var(--sans)}
+    .faq-q:hover{background:var(--surface2)}
+    .faq-arrow{font-size:12px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+    .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;font-size:13px;color:var(--muted);line-height:1.65}
+    .faq-a-inner{padding:.25rem 1.25rem 1rem}
+    .faq-item.open .faq-arrow{transform:rotate(180deg)}
+    .faq-item.open .faq-a{max-height:500px}
+    .guide-tip{background:var(--best-bg);border:1px solid #99F6E4;border-radius:var(--r);padding:1.25rem 1.5rem;font-size:13px;color:var(--best);line-height:1.6}
+    .guide-tip strong{font-weight:500}
 
+    .footnote{margin-top:1.25rem;font-size:11px;color:var(--faint);line-height:1.7}
     @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .fade{animation:fadeUp .3s ease both}
-    @media(max-width:640px){header{padding:1rem}main{padding:1rem 1rem 3rem}.sim{padding:1.25rem}}
+    @media(max-width:640px){header{padding:1rem}main{padding:1rem 1rem 3rem}.sim{padding:1.1rem}}
   </style>
 </head>
 <body>
 <header>
   <div class="logo">
     <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L4.09 12.26a1 1 0 00.89 1.74H11v8l8.91-10.26a1 1 0 00-.89-1.74H13V2z"/></svg></div>
-    <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers · 6 kVA</div></div>
+    <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers</div></div>
   </div>
   <div id="badge-date">Chargement…</div>
 </header>
@@ -135,30 +174,48 @@
   <div class="sim fade">
     <div class="sim-title">Votre profil de consommation</div>
     <div class="sim-grid">
+
       <div class="sim-field">
         <label>Consommation annuelle</label>
         <div class="input-wrap">
-          <input type="number" id="inp-conso" min="500" max="30000" step="100" value="5700" />
+          <input type="number" id="inp-conso" min="500" max="50000" step="100" value="5700" />
           <span class="input-unit">kWh</span>
         </div>
-        <div class="sim-hint">Studio ≈ 1 500 · appartement moyen ≈ 4 500–6 000 · maison tout-électrique ≈ 12 000–18 000 kWh/an</div>
+        <div class="sim-hint">Studio ≈ 1 500 · appartement ≈ 4 500–6 000 · maison tout-élec. ≈ 12 000–18 000 kWh/an</div>
       </div>
+
+      <div class="sim-field">
+        <label>Puissance du compteur</label>
+        <select class="kva-select" id="sel-kva">
+          <option value="3">3 kVA</option>
+          <option value="6" selected>6 kVA</option>
+          <option value="9">9 kVA</option>
+          <option value="12">12 kVA</option>
+          <option value="15">15 kVA</option>
+        </select>
+        <div class="sim-hint">La plupart des appartements sont en 6 kVA. Les maisons sont souvent en 9 ou 12 kVA.</div>
+      </div>
+
       <div class="sim-field">
         <label>Part en heures creuses</label>
-        <div class="slider-val"><span id="hc-disp">30</span><span class="u">%</span></div>
+        <div class="hc-row">
+          <input type="number" id="inp-hc" min="0" max="80" step="1" value="30" />
+          <span class="hc-unit">%</span>
+        </div>
         <div class="slider-wrap">
-          <input type="range" id="sl-hc" min="0" max="80" step="5" value="30" />
+          <input type="range" id="sl-hc" min="0" max="80" step="1" value="30" />
           <div class="slider-labels"><span>0%</span><span>40%</span><span>80%</span></div>
         </div>
-        <div class="sim-hint">Seuil de rentabilité HC/HP ≈ <strong>25–30%</strong> de conso en heures creuses. En dessous → l'option base est souvent meilleure.</div>
+        <div class="sim-hint">Seuil de rentabilité HC/HP ≈ <strong>25–30%</strong>. En dessous, l'option base est souvent meilleure.</div>
       </div>
+
     </div>
   </div>
 
-  <!-- Summary cards -->
+  <!-- Summary -->
   <div class="summary fade" id="summary-cards" style="animation-delay:.04s"></div>
 
-  <!-- Toolbar -->
+  <!-- Toolbar : filters only (sort via column headers) -->
   <div class="toolbar fade" style="animation-delay:.06s">
     <span class="flabel">Filtrer</span>
     <button class="fbtn active" data-f="all">Tous</button>
@@ -166,10 +223,7 @@
     <button class="fbtn" data-f="indexe">Indexé</button>
     <button class="fbtn" data-f="vert">Vert</button>
     <div class="toolbar-sep"></div>
-    <span class="flabel">Trier</span>
-    <button class="sbtn active" data-s="cost">Coût <span id="ar-cost">↑</span></button>
-    <button class="sbtn" data-s="kwh">kWh base <span id="ar-kwh">↑</span></button>
-    <button class="sbtn" data-s="sav">Économies <span id="ar-sav">↑</span></button>
+    <span style="font-size:11px;color:var(--faint)">Cliquez sur un en-tête de colonne pour trier</span>
   </div>
 
   <!-- Table -->
@@ -179,140 +233,245 @@
         <tr>
           <th>Fournisseur / offre</th>
           <th class="th-c">Type</th>
-          <th class="sortable" data-col="kwh">kWh base</th>
+          <th class="sortable" data-col="kwh_base" title="Trier par kWh base">kWh base <span class="sort-arrow"></span></th>
           <th>kWh HC</th>
           <th>kWh HP</th>
-          <th class="sortable" data-col="abo">Abo. /an</th>
-          <th class="sortable" data-col="cost">Coût annuel</th>
-          <th class="sortable" data-col="sav">vs TRV</th>
+          <th class="sortable" data-col="abo" title="Trier par abonnement">Abo. /an <span class="sort-arrow"></span></th>
+          <th class="sortable sorted" data-col="cost" title="Trier par coût annuel">Coût annuel <span class="sort-arrow">↑</span></th>
+          <th class="sortable" data-col="sav" title="Trier par économies">vs TRV <span class="sort-arrow"></span></th>
           <th class="th-c">Vert</th>
         </tr>
       </thead>
-      <tbody id="tbody"></tbody>
+      <tbody id="tbody"><tr><td colspan="9" style="padding:3rem;text-align:center;color:var(--muted)">Chargement…</td></tr></tbody>
     </table>
   </div>
 
   <div class="footnote">
-    * Coût annuel = (kWh × consommation) + abonnement. Ligne Base : kWh base × 100% conso. Ligne HC/HP : (kWh HC × % HC + kWh HP × % HP) × conso + abo.
-    Tarifs TTC 6 kVA mis à jour automatiquement chaque semaine. Vérifiez toujours les tarifs sur le site du fournisseur avant souscription.
+    * Coût annuel = (kWh effectif × consommation) + abonnement. Ligne Base : kWh base × 100% conso.
+    Ligne HC/HP : (kWh HC × % HC + kWh HP × % HP) × conso + abonnement.
+    L'abonnement varie selon la puissance du compteur — les montants affichés sont indicatifs pour 6 kVA.
+    Tarifs TTC mis à jour automatiquement chaque semaine. Vérifiez toujours sur le site du fournisseur avant souscription.
   </div>
+
+  <!-- ── Guide ── -->
+  <section class="guide fade" style="animation-delay:.12s">
+    <div class="guide-title">Comprendre les offres d'électricité</div>
+    <div class="guide-sub">Tarif fixe ou indexé ? Heures creuses ou base ? Ce qu'il faut vraiment savoir avant de choisir.</div>
+
+    <div class="guide-grid">
+      <!-- Fixe -->
+      <div class="gcard">
+        <div class="gcard-head">
+          <div class="gcard-icon icon-fixe">🔒</div>
+          <div>
+            <div class="gcard-name">Offre à prix fixe</div>
+            <span class="gcard-tag type-fixe">Fixe</span>
+          </div>
+        </div>
+        <p>Le prix du kWh hors taxes est <strong>bloqué</strong> pendant 1, 2 ou 3 ans à la souscription. Si les tarifs montent (comme en 2022–2024), vous êtes protégé. Si ils baissent, vous ne pouvez pas en profiter.</p>
+        <p>Attention : seul le prix HT est bloqué. Les taxes (TVA, accise, TURPE) peuvent évoluer et s'ajoutent toujours à votre facture.</p>
+        <div class="pro-con">
+          <div class="pros">
+            <div class="pc-title">Avantages</div>
+            <div class="pc-item">Protège des hausses de marché</div>
+            <div class="pc-item">Budget prévisible</div>
+            <div class="pc-item">Souvent moins cher que le TRV</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Inconvénients</div>
+            <div class="pc-item">Ne profite pas des baisses</div>
+            <div class="pc-item">Taxes restent variables</div>
+            <div class="pc-item">Tarif peut remonter après expiration</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indexé -->
+      <div class="gcard">
+        <div class="gcard-head">
+          <div class="gcard-icon icon-indexe">📈</div>
+          <div>
+            <div class="gcard-name">Offre indexée</div>
+            <span class="gcard-tag type-indexe">Indexé</span>
+          </div>
+        </div>
+        <p>Le prix du kWh suit les évolutions du tarif réglementé EDF (TRV), généralement avec une <strong>remise permanente</strong> de 5 à 15%. Quand le TRV baisse (comme en février 2025), votre prix baisse aussi.</p>
+        <p>Ces offres sont souvent sans engagement : vous pouvez changer à tout moment gratuitement. La remise est garantie, pas le prix final.</p>
+        <div class="pro-con">
+          <div class="pros">
+            <div class="pc-title">Avantages</div>
+            <div class="pc-item">Profite des baisses du TRV</div>
+            <div class="pc-item">Remise permanente vs EDF</div>
+            <div class="pc-item">Sans engagement</div>
+          </div>
+          <div class="cons">
+            <div class="pc-title">Inconvénients</div>
+            <div class="pc-item">Exposé aux hausses du marché</div>
+            <div class="pc-item">Moins prévisible à long terme</div>
+            <div class="pc-item">Remise peut être révisée</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="guide-faq" id="faq"></div>
+
+    <!-- Tip -->
+    <div class="guide-tip">
+      <strong>Notre lecture du marché (mars 2026)</strong> — Les tarifs ont baissé deux fois consécutives (−15% en fév. 2025, −0,8% en fév. 2026). Dans ce contexte de stabilisation, une offre fixe à −13 à −17% sous le TRV (comme Alpiq ou Ekwateur) reste le meilleur rapport sécurité/économies. L'option HC/HP ne devient rentable qu'à partir de 25–30% de conso décalée en heures creuses — vérifiez vos habitudes avant de souscrire.
+    </div>
+  </section>
 </main>
 
 <script>
-let data = null, conso = 5700, hcPct = 0.30, filter = 'all', sortKey = 'cost', sortDir = 1;
+// ── State ──────────────────────────────────────────────────────────────
+let data = null;
+let conso = 5700, hcPct = 0.30, kva = 6;
+let filter = 'all';
+let sortCol = 'cost', sortDir = 1;
 
+// ── Load ───────────────────────────────────────────────────────────────
 async function load() {
   try {
     const r = await fetch('./tarifs.json?t=' + Date.now());
     data = await r.json();
+    const d = new Date(data.meta.updated_at);
     document.getElementById('badge-date').textContent =
-      '● ' + new Date(data.meta.updated_at).toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+      '● ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
     render();
   } catch(e) {
     document.getElementById('tbody').innerHTML =
-      '<tr><td colspan="9" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json</td></tr>';
+      '<tr><td colspan="9" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
   }
 }
 
-function trvCost() {
-  const t = data.trv;
-  const kwh = hcPct >= 0.25 ? t.kwh_hc * hcPct + t.kwh_hp * (1-hcPct) : t.kwh_base;
-  return kwh * conso + t.abo_annuel;
-}
-
-function offrecost(o) {
+// ── Cost helpers ────────────────────────────────────────────────────────
+// Returns effective annual cost for an offer row, or null if N/A
+function offreCost(o) {
   if (o.hc_indisponible) return null;
-  if (o.mode === 'hc' && o.kwh_hc) {
-    return (o.kwh_hc * hcPct + o.kwh_hp * (1-hcPct)) * conso + o.abo_annuel;
+  if (o.mode === 'hc' && o.kwh_hc != null && o.kwh_hp != null) {
+    const kwh = o.kwh_hc * hcPct + o.kwh_hp * (1 - hcPct);
+    return kwh * conso + o.abo_annuel;
   }
   return o.kwh_base * conso + o.abo_annuel;
 }
 
+function trvCost() {
+  const t = data.trv;
+  if (hcPct >= 0.25) {
+    return (t.kwh_hc * hcPct + t.kwh_hp * (1 - hcPct)) * conso + t.abo_annuel;
+  }
+  return t.kwh_base * conso + t.abo_annuel;
+}
+
+// ── Render ──────────────────────────────────────────────────────────────
 function render() {
+  if (!data) return;
   const trv = trvCost();
 
-  // summary
-  const baseOffres = data.offres.filter(o => o.mode === 'base' && !o.is_trv && !o.hc_indisponible);
-  const costs = baseOffres.map(o => offrecost(o)).filter(Boolean);
-  const bestPrice = Math.min(...costs);
-  const bestSaving = trv - bestPrice;
+  // Summary cards
+  const nonTrvBase = data.offres.filter(o => o.mode === 'base' && !o.is_trv && !o.hc_indisponible);
+  const costs = nonTrvBase.map(o => offreCost(o)).filter(c => c !== null);
+  const bestCost = Math.min(...costs);
+
   document.getElementById('summary-cards').innerHTML = `
-    <div class="scard"><div class="scard-label">Tarif réglementé EDF</div><div class="scard-val">${Math.round(trv)} €</div><div class="scard-sub">coût annuel estimé</div></div>
-    <div class="scard"><div class="scard-label">Meilleure offre base</div><div class="scard-val">${Math.round(bestPrice)} €</div><div class="scard-sub">économie : −${Math.round(bestSaving)} €/an</div></div>
-    <div class="scard"><div class="scard-label">Consommation saisie</div><div class="scard-val">${conso.toLocaleString('fr-FR')}</div><div class="scard-sub">kWh par an</div></div>
-    <div class="scard"><div class="scard-label">Part heures creuses</div><div class="scard-val">${Math.round(hcPct*100)}%</div><div class="scard-sub">${hcPct>=0.25?'mode HC/HP activé':'mode base recommandé'}</div></div>
+    <div class="scard"><div class="scard-label">Tarif réglementé EDF</div><div class="scard-val">${Math.round(trv).toLocaleString('fr-FR')} €</div><div class="scard-sub">coût annuel estimé</div></div>
+    <div class="scard"><div class="scard-label">Meilleure offre base</div><div class="scard-val">${Math.round(bestCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie : −${Math.round(trv - bestCost)} €/an</div></div>
+    <div class="scard"><div class="scard-label">Consommation</div><div class="scard-val">${conso.toLocaleString('fr-FR')}</div><div class="scard-sub">kWh par an</div></div>
+    <div class="scard"><div class="scard-label">Compteur / HC</div><div class="scard-val">${kva} kVA · ${Math.round(hcPct*100)}%</div><div class="scard-sub">${hcPct >= 0.25 ? 'mode HC/HP activé' : 'mode base recommandé'}</div></div>
   `;
 
-  // filter + sort pairs
-  let offres = [...data.offres];
-  if (filter !== 'all') {
-    offres = offres.filter(o => {
-      if (filter === 'fix')    return o.type === 'fixe';
-      if (filter === 'indexe') return o.type === 'indexe';
-      if (filter === 'vert')   return o.vert;
-      return true;
-    });
-  }
+  // Filter
+  let offres = data.offres.filter(o => {
+    if (filter === 'fix')    return o.type === 'fixe';
+    if (filter === 'indexe') return o.type === 'indexe';
+    if (filter === 'vert')   return o.vert;
+    return true;
+  });
 
-  // group by fournisseur+offre, keep pairs together
-  const pairs = {};
+  // Group into pairs {base, hc}, keyed by fournisseur+offre
+  const pairMap = {};
   offres.forEach(o => {
-    const key = o.fournisseur + '||' + o.offre;
-    if (!pairs[key]) pairs[key] = {};
-    pairs[key][o.mode] = o;
+    const k = o.fournisseur + '§' + o.offre;
+    if (!pairMap[k]) pairMap[k] = {};
+    pairMap[k][o.mode] = o;
   });
 
-  // compute sort value per pair (use base row)
-  const pairList = Object.values(pairs).map(p => {
-    const base = p['base'];
-    const cost = base ? offrecost(base) : Infinity;
-    const sav  = base ? trv - cost : -Infinity;
-    return { p, sortBase: base, cost, sav };
+  // Build sortable list — sort value is the RELEVANT row cost given current hcPct
+  // If hcPct >= 0.25: sort by HC row cost (if available), else base cost
+  // If hcPct < 0.25: sort by base cost
+  const pairList = Object.values(pairMap).map(pair => {
+    const base = pair['base'];
+    const hc   = pair['hc'];
+    let sortCost, sortKwh, sortAbo, sortSav;
+
+    const useHC = hcPct >= 0.25 && hc && !hc.hc_indisponible && hc.kwh_hc != null;
+    const refRow = useHC ? hc : base;
+
+    sortCost = refRow ? offreCost(refRow) : Infinity;
+    sortKwh  = base ? base.kwh_base : Infinity;
+    sortAbo  = base ? base.abo_annuel : Infinity;
+    sortSav  = sortCost !== null && isFinite(sortCost) ? trv - sortCost : -Infinity;
+
+    return { pair, sortCost: sortCost ?? Infinity, sortKwh, sortAbo, sortSav };
   });
 
-  pairList.sort((a,b) => {
+  pairList.sort((a, b) => {
     let va, vb;
-    if (sortKey === 'cost')  { va = a.cost; vb = b.cost; }
-    else if (sortKey === 'kwh') { va = a.sortBase?.kwh_base ?? Infinity; vb = b.sortBase?.kwh_base ?? Infinity; }
-    else { va = a.sav; vb = b.sav; sortDir = -Math.abs(sortDir) * (sortDir > 0 ? 1 : -1); }
+    if (sortCol === 'cost')     { va = a.sortCost; vb = b.sortCost; }
+    else if (sortCol === 'kwh_base') { va = a.sortKwh; vb = b.sortKwh; }
+    else if (sortCol === 'abo') { va = a.sortAbo; vb = b.sortAbo; }
+    else if (sortCol === 'sav') { va = a.sortSav; vb = b.sortSav; return (vb - va) * sortDir; }
+    else { va = 0; vb = 0; }
     return (va - vb) * sortDir;
   });
-  // fix saving sort direction separately
-  if (sortKey === 'sav') pairList.sort((a,b) => (b.sav - a.sav) * sortDir);
 
-  // find best base cost (non-TRV)
-  const nonTrvCosts = pairList.filter(x => x.sortBase && !x.sortBase.is_trv).map(x => x.cost);
-  const bestCostVal = Math.min(...nonTrvCosts);
+  // Find best non-TRV cost for "Meilleur prix" badge
+  const bestNonTrv = pairList
+    .filter(p => p.pair['base'] && !p.pair['base'].is_trv)
+    .map(p => p.sortCost)
+    .filter(c => isFinite(c));
+  const globalBest = Math.min(...bestNonTrv);
 
+  // Render rows
   let rows = '';
-  pairList.forEach(({ p }) => {
-    const base = p['base'];
-    const hc   = p['hc'];
+  pairList.forEach(({ pair }) => {
+    const base = pair['base'];
+    const hc   = pair['hc'];
 
     [base, hc].forEach(o => {
       if (!o) return;
-      const cost = offrecost(o);
+      const cost   = offreCost(o);
       const saving = cost !== null ? trv - cost : null;
-      const isTRV = !!o.is_trv;
-      const isNA  = !!o.hc_indisponible;
-      const isBest = !isTRV && !isNA && cost !== null && Math.abs(cost - bestCostVal) < 0.5 && o.mode === 'base';
+      const isTRV  = !!o.is_trv;
+      const isNA   = !!o.hc_indisponible;
+      const isBest = !isTRV && !isNA && cost !== null && Math.abs(cost - globalBest) < 0.5;
 
-      const savHtml = isTRV ? '<span class="sav-ref">référence</span>'
-        : isNA ? '<span class="na-cell">—</span>'
-        : saving >= 0 ? `<span class="saving sav-pos">−${Math.round(saving)} €</span>`
+      const savHtml = isTRV
+        ? '<span class="sav-ref">référence</span>'
+        : isNA
+        ? '<span class="na">—</span>'
+        : saving >= 0
+        ? `<span class="saving sav-pos">−${Math.round(saving)} €</span>`
         : `<span class="saving sav-neg">+${Math.round(Math.abs(saving))} €</span>`;
 
-      const costHtml = isNA ? '<span class="na-cell">n/a</span>'
-        : `<span class="num-big">${Math.round(cost)} €</span>`;
+      const costHtml = isNA
+        ? '<span class="na">n/a</span>'
+        : `<span class="num-big">${Math.round(cost).toLocaleString('fr-FR')} €</span>`;
 
-      const hcCell = isNA ? '<span class="na-cell">—</span>'
-        : o.kwh_hc ? `<span class="num">${o.kwh_hc.toFixed(4)} €</span>` : '<span class="na-cell">—</span>';
-      const hpCell = isNA ? '<span class="na-cell">—</span>'
-        : o.kwh_hp ? `<span class="num">${o.kwh_hp.toFixed(4)} €</span>` : '<span class="na-cell">—</span>';
+      const hcCell = isNA || o.kwh_hc == null
+        ? '<span class="na">—</span>'
+        : `<span class="num">${o.kwh_hc.toFixed(4)} €</span>`;
+
+      const hpCell = isNA || o.kwh_hp == null
+        ? '<span class="na">—</span>'
+        : `<span class="num">${o.kwh_hp.toFixed(4)} €</span>`;
 
       const vertHtml = o.vert
         ? `<span class="badge bg-green">✓ verte</span>`
-        : o.vert_option ? `<span class="badge bg-gray">option</span>`
+        : o.vert_option
+        ? `<span class="badge bg-gray">option</span>`
         : `<span class="badge bg-gray">non</span>`;
 
       const typeHtml = o.type === 'fixe'
@@ -325,15 +484,14 @@ function render() {
         ? '<span class="mode-pill pill-base">Base</span>'
         : '<span class="mode-pill pill-hc">HC / HP</span>';
 
-      const rowClass = [
+      const cls = [
         isTRV ? 'row-trv' : '',
-        o.mode === 'hc' ? 'row-hc' : '',
-        o.mode === 'hc' && !isNA ? 'row-hc-available' : '',
+        o.mode === 'hc' && !isNA ? 'row-hc-avail' : '',
         isNA ? 'row-hc-na' : '',
-        isBest ? 'row-best-base' : ''
+        isBest ? 'row-best' : ''
       ].filter(Boolean).join(' ');
 
-      rows += `<tr class="${rowClass}">
+      rows += `<tr class="${cls}">
         <td>
           <div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}</div>
           <div class="offer-name">${o.offre}</div>
@@ -351,31 +509,112 @@ function render() {
     });
   });
 
-  document.getElementById('tbody').innerHTML = rows || '<tr><td colspan="9" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
+  document.getElementById('tbody').innerHTML = rows ||
+    '<tr><td colspan="9" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
 }
 
-// Events
+// ── Events ──────────────────────────────────────────────────────────────
+
+// Conso
 document.getElementById('inp-conso').addEventListener('input', e => {
-  const v = parseInt(e.target.value); if (v >= 100 && v <= 50000) { conso = v; render(); }
+  const v = parseInt(e.target.value);
+  if (v >= 100 && v <= 50000) { conso = v; render(); }
 });
-document.getElementById('sl-hc').addEventListener('input', e => {
-  hcPct = parseInt(e.target.value) / 100;
-  document.getElementById('hc-disp').textContent = e.target.value;
+
+// kVA
+document.getElementById('sel-kva').addEventListener('change', e => {
+  kva = parseInt(e.target.value);
   render();
 });
+
+// HC slider + number input — synced
+const slHC  = document.getElementById('sl-hc');
+const inpHC = document.getElementById('inp-hc');
+
+function setHC(val) {
+  val = Math.max(0, Math.min(80, Math.round(val)));
+  hcPct = val / 100;
+  slHC.value  = val;
+  inpHC.value = val;
+  render();
+}
+
+slHC.addEventListener('input', e => setHC(parseInt(e.target.value)));
+inpHC.addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  if (!isNaN(v)) setHC(v);
+});
+inpHC.addEventListener('blur', e => {
+  const v = parseInt(e.target.value);
+  setHC(isNaN(v) ? 0 : v);
+});
+
+// Filters
 document.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => {
   document.querySelectorAll('.fbtn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active'); filter = b.dataset.f; render();
-}));
-document.querySelectorAll('.sbtn').forEach(b => b.addEventListener('click', () => {
-  const k = b.dataset.s;
-  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = 1; }
-  document.querySelectorAll('.sbtn').forEach(x => x.classList.remove('active'));
   b.classList.add('active');
-  ['cost','kwh','sav'].forEach(k2 => { const el = document.getElementById('ar-'+k2); if(el) el.textContent = sortDir===1?'↑':'↓'; });
+  filter = b.dataset.f;
   render();
 }));
 
+// Column sort (click header)
+document.querySelectorAll('thead th.sortable').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1;
+    else { sortCol = col; sortDir = 1; }
+    document.querySelectorAll('thead th.sortable').forEach(t => {
+      t.classList.remove('sorted');
+      const arrow = t.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = '';
+    });
+    th.classList.add('sorted');
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = sortDir === 1 ? '↑' : '↓';
+    render();
+  });
+});
+
+// ── FAQ ─────────────────────────────────────────────────────────────────
+const faqs = [
+  {
+    q: "Quelle est la différence entre le kWh base et le kWh HC/HP ?",
+    a: "En option Base, vous payez le même prix du kWh quelle que soit l'heure. En option Heures Creuses/Heures Pleines, vous bénéficiez d'un tarif réduit pendant 8 heures par jour (généralement la nuit), mais payez plus cher le reste du temps. L'option HC/HP est rentable uniquement si vous consommez au moins 25 à 30% de votre électricité pendant ces 8 heures creuses — typiquement grâce à un chauffe-eau, un lave-linge ou une voiture électrique programmables."
+  },
+  {
+    q: "Peut-on changer de fournisseur librement ?",
+    a: "Oui, totalement. Le changement de fournisseur est gratuit, sans coupure d'électricité, et le nouveau fournisseur se charge de résilier l'ancien contrat. La seule contrainte : certaines offres à prix fixe incluent une durée d'engagement (1, 2 ou 3 ans) pendant laquelle les prix sont bloqués. Mais même avec un prix fixe, vous pouvez partir — c'est vous qui pouvez résilier, pas le fournisseur qui peut vous bloquer."
+  },
+  {
+    q: "L'électricité « verte » est-elle vraiment renouvelable ?",
+    a: "Il existe deux niveaux. Les offres avec Garanties d'Origine (GO) certifient qu'un équivalent de votre consommation a été injecté dans le réseau par un producteur renouvelable, mais ce n'est pas forcément l'électricité que vous consommez physiquement (le réseau est mutualisé). Les offres labellisées VertVolt Engagé (comme Octopus ou La Bellenergie) vont plus loin : elles achètent l'électricité directement auprès de producteurs français identifiés, ce qui soutient réellement le développement des EnR en France."
+  },
+  {
+    q: "Pourquoi le coût annuel change-t-il selon le % d'heures creuses ?",
+    a: "Quand vous entrez un pourcentage d'heures creuses, le comparateur recalcule en temps réel le coût de la ligne HC/HP selon la formule : (kWh HC × % HC + kWh HP × % HP) × consommation + abonnement. Par exemple avec 40% en HC : si le kWh HC est 0,14 € et le kWh HP est 0,19 €, le kWh moyen pondéré est 0,17 € — souvent plus avantageux qu'un tarif base à 0,167 €. C'est le calcul clé pour décider si l'option HC/HP vous convient."
+  },
+  {
+    q: "À quoi sert la puissance du compteur (kVA) ?",
+    a: "La puissance du compteur (en kVA) détermine la quantité maximale d'appareils que vous pouvez utiliser simultanément. Elle influe sur le montant de l'abonnement : plus la puissance est élevée, plus l'abonnement est cher. La plupart des appartements sont en 6 kVA. Si vous avez une cuisine tout-électrique, un chauffe-eau et du chauffage électrique, 9 ou 12 kVA peuvent être nécessaires pour éviter les disjonctions. Notez que dans ce comparateur, les tarifs HC/HP affichés restent ceux du 6 kVA — ils varient légèrement selon la puissance réelle."
+  }
+];
+
+document.getElementById('faq').innerHTML = faqs.map((f, i) => `
+  <div class="faq-item" id="faq-${i}">
+    <button class="faq-q" onclick="toggleFaq(${i})">
+      <span>${f.q}</span>
+      <span class="faq-arrow">▼</span>
+    </button>
+    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
+  </div>
+`).join('');
+
+function toggleFaq(i) {
+  const el = document.getElementById('faq-' + i);
+  el.classList.toggle('open');
+}
+
+// ── Boot ────────────────────────────────────────────────────────────────
 load();
 </script>
 </body>
