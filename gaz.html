@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparateur gaz naturel France 2026 — Comparateur électricité 🐅</title>
+  <meta name="description" content="Comparez les offres de gaz naturel des fournisseurs français pour particuliers. Prix au kWh, abonnement, économies par rapport au Prix Repère CRE." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#F7F5F0;--surface:#fff;--surface2:#F2EFE9;
+      --border:#E2DDD4;--border2:#C8C2B5;
+      --text:#1A1714;--muted:#7A7268;--faint:#B0A99E;
+      --accent:#185FA5;--accent-bg:#EBF3FC;
+      --green:#276749;--green-bg:#E8F5EE;
+      --amber:#92400E;--amber-bg:#FEF3C7;
+      --red:#9B1C1C;--red-bg:#FEE2E2;
+      --r:10px;--rs:6px;
+      --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0F0F0F;--surface:#1A1A1A;--surface2:#222;
+        --border:#2E2E2E;--border2:#444;
+        --text:#F0EDE8;--muted:#8A8480;--faint:#555250;
+        --accent:#4A9EE8;--accent-bg:#0D2235;
+        --green:#34D399;--green-bg:#052E1C;
+        --amber:#FCD34D;--amber-bg:#2D1F00;
+        --red:#F87171;--red-bg:#2D0A0A;
+      }
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+    /* ── Header / Nav ── */
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.75rem;position:sticky;top:0;z-index:100}
+    a.logo,a.logo:link,a.logo:visited,a.logo:hover,a.logo:active,a.logo:focus{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+    .header-sub{font-size:12px;color:var(--muted)}
+    h1{font-size:16px;font-weight:500;letter-spacing:-.02em}
+    nav{display:flex;align-items:center;gap:4px;justify-self:center}
+    .nav-link{font-size:13px;font-weight:500;padding:6px 14px;border-radius:20px;text-decoration:none;color:var(--muted);transition:all .15s;white-space:nowrap}
+    .nav-link:hover{color:var(--text);background:var(--surface2)}
+    .nav-link.active{color:var(--text);background:var(--surface2);border:1px solid var(--border)}
+    .nav-link:not(.active){border:1px solid transparent}
+    @media(max-width:600px){.nav-link{font-size:11px;padding:5px 9px}}
+
+    /* ── Main layout ── */
+    main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 5rem}
+    .page-title{font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:.4rem}
+    .page-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;max-width:640px}
+
+    /* ── Simulator ── */
+    .sim{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.8rem;margin-bottom:1.5rem}
+    .sim-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+    .sim-row{display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+    .sim-field{display:flex;flex-direction:column;gap:.4rem}
+    .sim-field label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .sim-field input[type=number]{font-family:var(--mono);font-size:20px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 36px 4px 0;outline:none;width:130px;-moz-appearance:textfield}
+    .sim-field input[type=number]::-webkit-outer-spin-button,
+    .sim-field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+    .sim-field input[type=number]:focus{border-bottom-color:var(--accent)}
+    .sim-field select{font-family:var(--mono);font-size:18px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 4px 4px 0;outline:none;cursor:pointer}
+    .input-suffix{font-size:13px;color:var(--muted);font-family:var(--mono);margin-left:-28px}
+
+    /* ── Summary cards ── */
+    .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:1.5rem}
+    .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+    .scard-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+    .scard-val{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-.02em}
+    .scard-sub{font-size:11px;color:var(--muted);margin-top:.2rem}
+
+    /* ── Filters ── */
+    .filters{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+    .filter-btn{font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .12s}
+    .filter-btn:hover,.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+    .filter-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+    .filters-right{margin-left:auto;font-size:12px;color:var(--muted)}
+
+    /* ── Table ── */
+    .tscroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;background:var(--surface);min-width:700px}
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;cursor:pointer;user-select:none}
+    thead th:first-child{text-align:left}
+    thead th.th-c{text-align:center;cursor:default}
+    thead th:hover:not(.th-c){color:var(--text)}
+    thead th.sorted{color:var(--accent)}
+    tbody tr{border-bottom:1px solid var(--border)}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover td{background:var(--surface2)}
+    tbody tr.is-repere{opacity:.6}
+    tbody tr.is-repere td:first-child{font-style:italic}
+    td{padding:10px 14px;font-size:13px;text-align:right;vertical-align:middle;background:var(--surface);transition:background .1s}
+    td:first-child{text-align:left}
+    .num{font-family:var(--mono);font-size:13px}
+    .provider-name{font-weight:500;font-size:13px}
+    .offer-name{font-size:11px;color:var(--muted)}
+    .usage-badge{display:inline-block;font-size:9px;font-weight:500;padding:1px 5px;border-radius:3px;margin-top:2px}
+    .usage-chauffage{background:var(--amber-bg);color:var(--amber)}
+    .usage-cuisson{background:var(--accent-bg);color:var(--accent)}
+
+    .tag{display:inline-block;font-size:9px;font-weight:500;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle}
+    .tag-best{background:var(--amber-bg);color:var(--amber)}
+    .tag-eng{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+
+    .saving-pos{color:var(--green);font-family:var(--mono)}
+    .saving-neg{color:var(--red);font-family:var(--mono)}
+    .saving-zero{color:var(--muted);font-family:var(--mono)}
+
+    .vert-badge{font-size:10px;color:var(--green);font-weight:500}
+    .souscire-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:4px 10px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--muted);text-decoration:none;transition:all .12s;white-space:nowrap}
+    .souscire-btn:hover{border-color:var(--border2);color:var(--text)}
+
+    #badge-date-gaz{font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;background:var(--amber-bg);color:var(--amber);border:1px solid #FDE68A;white-space:nowrap;justify-self:end}
+
+    .notice{font-size:11px;color:var(--faint);line-height:1.7;margin-top:1.5rem}
+
+    footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border)}
+    footer a{color:var(--faint);text-decoration:underline}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .fade{animation:fadeUp .3s ease both}
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
+  </a>
+  <nav>
+    <a href="index.html" class="nav-link">Électricité</a>
+    <a href="gaz.html" class="nav-link active">Gaz</a>
+    <a href="calculateur-hc.html" class="nav-link">Rentabilité HC/HP</a>
+    <a href="conseils.html" class="nav-link">Conseils</a>
+  </nav>
+  <div id="badge-date-gaz">Chargement…</div>
+</header>
+
+<main>
+  <div class="fade">
+    <div class="page-title">Comparateur gaz naturel 🔥</div>
+    <div class="page-sub">Simulez votre facture annuelle selon votre consommation et comparez les offres des fournisseurs par rapport au Prix Repère CRE de mars 2026.</div>
+  </div>
+
+  <!-- Simulator -->
+  <div class="sim fade" style="animation-delay:.03s">
+    <div class="sim-title">Votre profil</div>
+    <div class="sim-row">
+      <div class="sim-field">
+        <label>Consommation annuelle</label>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <input type="number" id="inp-conso-gaz" min="500" max="80000" step="500" value="12000" />
+          <span class="input-suffix">kWh</span>
+        </div>
+      </div>
+      <div class="sim-field">
+        <label>Usage principal</label>
+        <select id="sel-usage">
+          <option value="chauffage" selected>Chauffage (+ ECS)</option>
+          <option value="cuisson">Cuisson / ECS seul</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary cards -->
+  <div class="summary fade" id="summary-cards" style="animation-delay:.05s"></div>
+
+  <!-- Filters -->
+  <div class="filters fade" style="animation-delay:.07s">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" data-filter="fixe">Prix fixe</button>
+    <button class="filter-btn" data-filter="indexe">Indexé</button>
+    <div class="filter-sep"></div>
+    <button class="filter-btn" data-filter="vert">🌿 Vert</button>
+    <button class="filter-btn" data-filter="engagement">Sans engagement</button>
+    <div class="filters-right" id="count-label"></div>
+  </div>
+
+  <!-- Table -->
+  <div class="tscroll fade" style="animation-delay:.09s">
+    <table>
+      <thead>
+        <tr>
+          <th data-sort="name">Fournisseur / Offre</th>
+          <th data-sort="cost">Coût annuel</th>
+          <th data-sort="monthly">Mensuel</th>
+          <th data-sort="vs">vs Prix Repère</th>
+          <th data-sort="kwh">kWh</th>
+          <th data-sort="abo">Abo./an</th>
+          <th class="th-c">Vert</th>
+          <th class="th-c">Souscrire</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <div class="notice fade" style="animation-delay:.11s">
+    * Prix TTC zone tarifaire 1 (Paris / Toulouse) — mars 2026. Prix Repère CRE : référence indicative mensuelle publiée par la Commission de Régulation de l'Énergie depuis juin 2023 (fin du TRV Engie). Le changement de fournisseur de gaz est gratuit, sans coupure et sans engagement (sauf offres indiquées). Sources : CRE, Selectra, JeChange.
+  </div>
+</main>
+
+<footer>
+  Créé par Fabien 🐅 · Données mises à jour chaque semaine ·
+  <a href="index.html">Électricité</a> ·
+  <a href="calculateur-hc.html">Rentabilité HC/HP</a> ·
+  <a href="conseils.html">Conseils</a> ·
+  <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener">Code source</a>
+</footer>
+
+<script>
+let data = null;
+let conso = 12000;
+let usage = 'chauffage';
+let sortKey = 'cost';
+let sortDir = 1;
+let activeFilter = 'all';
+
+async function load() {
+  try {
+    const r = await fetch('./tarifs-gaz.json?t=' + Date.now());
+    data = await r.json();
+
+    // Restore prefs
+    try {
+      const c = parseInt(localStorage.getItem('gaz_conso'));
+      const u = localStorage.getItem('gaz_usage');
+      if (c >= 500 && c <= 80000) conso = c;
+      if (u === 'chauffage' || u === 'cuisson') usage = u;
+    } catch(e) {}
+
+    document.getElementById('inp-conso-gaz').value = conso;
+    document.getElementById('sel-usage').value = usage;
+
+    const d = new Date(data.meta.updated_at);
+    document.getElementById('badge-date-gaz').textContent = '🔥 ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+
+    render();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function offreCost(o) {
+  return o.kwh * conso + o.abo_mensuel * 12;
+}
+
+function repere() {
+  const r = data.offres.find(o => o.is_repere && o.usage === usage);
+  return r ? offreCost(r) : null;
+}
+
+function render() {
+  const repereAnnuel = repere();
+
+  // Filter offers by usage
+  let offres = data.offres.filter(o => o.usage === usage && o.actif !== false);
+
+  // Apply UI filter
+  if (activeFilter === 'fixe')       offres = offres.filter(o => o.type === 'fixe');
+  if (activeFilter === 'indexe')     offres = offres.filter(o => o.type === 'indexe');
+  if (activeFilter === 'vert')       offres = offres.filter(o => o.vert);
+  if (activeFilter === 'engagement') offres = offres.filter(o => o.sans_engagement);
+
+  // Sort
+  offres.sort((a, b) => {
+    let va, vb;
+    if (sortKey === 'cost' || sortKey === 'monthly' || sortKey === 'vs') {
+      va = offreCost(a); vb = offreCost(b);
+    } else if (sortKey === 'kwh')  { va = a.kwh;         vb = b.kwh; }
+    else if (sortKey === 'abo')    { va = a.abo_mensuel;  vb = b.abo_mensuel; }
+    else { va = a.fournisseur;     vb = b.fournisseur; }
+    if (va < vb) return -sortDir;
+    if (va > vb) return sortDir;
+    return 0;
+  });
+
+  // Put repere on top always
+  const repereOffers = offres.filter(o => o.is_repere);
+  const normalOffers = offres.filter(o => !o.is_repere);
+  const bestCost = Math.min(...normalOffers.map(offreCost));
+
+  // Summary cards
+  const repereVal = repereAnnuel;
+  const bestOffer = normalOffers.find(o => offreCost(o) === bestCost);
+
+  document.getElementById('summary-cards').innerHTML = `
+    <div class="scard"><div class="scard-label">Prix Repère CRE</div><div class="scard-val">${repereVal ? Math.round(repereVal).toLocaleString('fr-FR') + ' €' : '—'}</div><div class="scard-sub">≈ ${repereVal ? Math.round(repereVal/12) : '—'} €/mois · référence officielle</div></div>
+    <div class="scard"><div class="scard-label">Meilleure offre marché</div><div class="scard-val">${Math.round(bestCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">≈ ${Math.round(bestCost/12)} €/mois · éco. −${repereVal ? Math.round(repereVal - bestCost) : '—'} €/an</div></div>
+    <div class="scard"><div class="scard-label">Consommation</div><div class="scard-val">${conso.toLocaleString('fr-FR')}</div><div class="scard-sub">kWh · ${usage === 'chauffage' ? 'chauffage + ECS' : 'cuisson / ECS'}</div></div>
+  `;
+
+  // Update sort headers
+  document.querySelectorAll('thead th[data-sort]').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.sort === sortKey);
+    th.textContent = th.textContent.replace(' ↑','').replace(' ↓','');
+    if (th.dataset.sort === sortKey) th.textContent += sortDir === 1 ? ' ↑' : ' ↓';
+  });
+
+  // Table rows
+  const allSorted = [...repereOffers, ...normalOffers];
+  document.getElementById('table-body').innerHTML = allSorted.map(o => {
+    const cost = offreCost(o);
+    const monthly = cost / 12;
+    const diff = repereVal ? Math.round(repereVal - cost) : null;
+    const isBest = !o.is_repere && cost === bestCost;
+    const savClass = diff === null ? 'saving-zero' : diff > 0 ? 'saving-pos' : diff < 0 ? 'saving-neg' : 'saving-zero';
+
+    return `<tr class="${o.is_repere ? 'is-repere' : ''}">
+      <td>
+        <div class="provider-name">${o.fournisseur}${isBest ? '<span class="tag tag-best">Meilleur prix</span>' : ''}</div>
+        <div class="offer-name">${o.offre}</div>
+        <div><span class="usage-badge usage-${o.usage}">${o.usage === 'chauffage' ? 'Chauffage' : 'Cuisson/ECS'}</span></div>
+      </td>
+      <td><span class="num" style="${isBest ? 'color:var(--green);font-weight:500' : ''}">${Math.round(cost).toLocaleString('fr-FR')} €</span></td>
+      <td><span class="num">${Math.round(monthly)} €</span></td>
+      <td><span class="${savClass}">${diff === null ? '—' : diff > 0 ? '−' + diff + ' €' : diff < 0 ? '+' + Math.abs(diff) + ' €' : '='}
+      </span></td>
+      <td><span class="num">${o.kwh.toFixed(4)} €</span></td>
+      <td><span class="num">${Math.round(o.abo_mensuel * 12)} €</span></td>
+      <td style="text-align:center">${o.vert ? `<span class="vert-badge" title="${o.label_vert || ''}">✓</span>` : '<span style="color:var(--faint);font-size:11px">—</span>'}</td>
+      <td style="text-align:center">${o.is_repere ? '—' : `<a href="${o.url}" target="_blank" rel="noopener" class="souscire-btn">Voir →</a>`}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('count-label').textContent = `${normalOffers.length} offre${normalOffers.length > 1 ? 's' : ''}`;
+}
+
+// Events
+document.getElementById('inp-conso-gaz').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  if (v >= 500 && v <= 80000) {
+    conso = v;
+    try { localStorage.setItem('gaz_conso', v); } catch(e) {}
+    if (data) render();
+  }
+});
+document.getElementById('sel-usage').addEventListener('change', e => {
+  usage = e.target.value;
+  try { localStorage.setItem('gaz_usage', usage); } catch(e) {}
+  if (data) render();
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    if (data) render();
+  });
+});
+
+document.querySelectorAll('thead th[data-sort]').forEach(th => {
+  th.addEventListener('click', () => {
+    if (sortKey === th.dataset.sort) sortDir *= -1;
+    else { sortKey = th.dataset.sort; sortDir = 1; }
+    if (data) render();
+  });
+});
+
+load();
+</script>
+</body>
+</html>
