@@ -301,6 +301,7 @@
   <a class="logo" href="index.html">
     <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
   </a>
+  <div id="badge-date" style="display:none">—</div>
   <nav class="header-nav">
     <a href="index.html" class="nav-link active">Électricité</a>
     <a href="gaz.html" class="nav-link">Gaz</a>
@@ -488,10 +489,10 @@ function loadPrefs() {
 
 async function load() {
   try {
-    const r = await fetch('./tarifs.json?t=' + Date.now());
+    const r = await fetch('./tarifs.json');
     data = await r.json();
     const d = new Date(data.meta.updated_at);
-    document.getElementById('badge-date').textContent = '● ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+    const badgeEl = document.getElementById('badge-date'); if(badgeEl){ badgeEl.style.display=''; badgeEl.textContent = '● ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}); }
     loadPrefs();
     document.getElementById('inp-conso').value = conso;
     document.getElementById('sel-kva').value = kva;
