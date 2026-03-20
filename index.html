@@ -251,7 +251,10 @@
     <div class="logo-icon" style="background:none;overflow:visible"><img src="icon-192.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
     <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
   </div>
-  <div id="badge-date">Chargement…</div>
+  <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+    <a href="guide-hc.html" style="font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);text-decoration:none;transition:all .12s" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Guide HC/HP</a>
+    <div id="badge-date">Chargement…</div>
+  </div>
 </header>
 
 <div class="alert-banner" id="alert-banner">
@@ -329,6 +332,7 @@
           <th>Fournisseur / offre</th>
           <th class="th-c col-desktop">Type</th>
           <th class="sortable sorted" data-col="cost">Coût annuel <span class="sort-arrow">↑</span></th>
+          <th class="col-desktop">Mensuel</th>
           <th class="sortable" data-col="sav">vs TRV <span class="sort-arrow"></span></th>
           <th class="sortable col-desktop" data-col="kwh_base">kWh base <span class="sort-arrow"></span></th>
           <th class="col-desktop">kWh HC</th>
@@ -339,7 +343,7 @@
           <th class="th-c col-mobile"></th>
         </tr>
       </thead>
-      <tbody id="tbody"><tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Chargement…</td></tr></tbody>
+      <tbody id="tbody"><tr><td colspan="11" style="padding:3rem;text-align:center;color:var(--muted)">Chargement…</td></tr></tbody>
     </table>
   </div>
 
@@ -389,7 +393,9 @@
 </main>
 
 <footer style="text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border);margin-top:0">
-  Créé par Fabien 🐅 · Données mises à jour chaque semaine · <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener" style="color:var(--faint);text-decoration:underline">Code source</a>
+  Créé par Fabien 🐅 · Données mises à jour chaque semaine ·
+  <a href="guide-hc.html" style="color:var(--faint);text-decoration:underline">Guide HC/HP</a> ·
+  <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener" style="color:var(--faint);text-decoration:underline">Code source</a>
 </footer>
 <script>
 let data = null;
@@ -447,7 +453,7 @@ async function load() {
     render();
     drawChart();
   } catch(e) {
-    document.getElementById('tbody').innerHTML = '<tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
+    document.getElementById('tbody').innerHTML = '<tr><td colspan="11" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
   }
 }
 
@@ -503,8 +509,8 @@ function render() {
   }
 
   document.getElementById('summary-cards').innerHTML = `
-    <div class="scard"><div class="scard-label">Tarif réglementé EDF</div><div class="scard-val">${Math.round(trv).toLocaleString('fr-FR')} €</div><div class="scard-sub">coût annuel estimé</div></div>
-    <div class="scard"><div class="scard-label">Meilleure offre base</div><div class="scard-val">${Math.round(bestCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie : −${Math.round(trv - bestCost)} €/an</div></div>
+    <div class="scard"><div class="scard-label">Tarif réglementé EDF</div><div class="scard-val">${Math.round(trv).toLocaleString('fr-FR')} €</div><div class="scard-sub">≈ ${Math.round(trv/12)} €/mois</div></div>
+    <div class="scard"><div class="scard-label">Meilleure offre base</div><div class="scard-val">${Math.round(bestCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">≈ ${Math.round(bestCost/12)} €/mois · éco. −${Math.round(trv - bestCost)} €/an</div></div>
     <div class="scard"><div class="scard-label">Consommation</div><div class="scard-val">${conso.toLocaleString('fr-FR')}</div><div class="scard-sub">kWh par an</div></div>
     <div class="scard"><div class="scard-label">Compteur / HC</div><div class="scard-val">${kva} kVA · ${Math.round(hcPct*100)}%</div><div class="scard-sub">${hcPct >= 0.25 ? 'mode HC/HP activé' : 'mode base recommandé'}</div></div>
     ${currentCard}
@@ -568,6 +574,7 @@ function render() {
       <td><div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}${currentTag}</div><div class="offer-name">${o.offre}</div>${modePill}${validTag}</td>
       <td style="text-align:center" class="col-desktop">${typeHtml}</td>
       <td>${costHtml}</td>
+      <td class="col-desktop"><span class="num">${isNA ? '<span class=\"na\">—</span>' : Math.round(cost/12).toLocaleString('fr-FR') + ' €'}</span></td>
       <td>${savHtml}</td>
       <td class="col-desktop"><span class="num">${kwh.toFixed(4)} €</span></td>
       <td class="col-desktop">${hcCell}</td>
@@ -579,7 +586,7 @@ function render() {
     </tr>`;
   });
 
-  document.getElementById('tbody').innerHTML = rows || '<tr><td colspan="10" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
+  document.getElementById('tbody').innerHTML = rows || '<tr><td colspan="11" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
 }
 
 document.getElementById('inp-conso').addEventListener('input', e => { const v = parseInt(e.target.value); if (v >= 100 && v <= 50000) { conso = v; savePrefs(); render(); } });
