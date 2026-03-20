@@ -200,9 +200,47 @@ def main():
             updated_ids.append(pid)
 
     # --- Timestamp ---
-    data["meta"]["updated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.now(timezone.utc)
+    data["meta"]["updated_at"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
     if updated_ids:
         data["meta"]["last_changes"] = updated_ids
+
+    # --- Historique ---
+    # Ajoute un point si le TRV a changé ou si aucun point n'existe pour ce mois
+    trv_kwh = data["trv"].get("kwh_base")
+    if trv_kwh:
+        historique = data.setdefault("historique", [])
+        today_str = now.strftime("%Y-%m-%d")
+        current_month = today_str[:7]  # YYYY-MM
+
+        # Cherche le meilleur kWh base du marché (hors TRV)
+        best_market = None
+        for o in data.get("offres", []):
+            if o.get("mode") == "base" and not o.get("is_trv") and not o.get("hc_indisponible") and o.get("actif", True):
+                kwh = o.get("kwh_base")
+                if kwh and (best_market is None or kwh < best_market):
+                    best_market = kwh
+
+        # Vérifie si un point existe déjà ce mois-ci
+        months_present = [p["date"][:7] for p in historique]
+        last_trv = historique[-1]["kwh_base"] if historique else None
+
+        if current_month not in months_present:
+            # Nouveau mois — ajoute toujours
+            historique.append({
+                "date": today_str,
+                "kwh_base": round(trv_kwh, 4),
+                "best_market": round(best_market, 4) if best_market else None
+            })
+            print(f"  Historique : nouveau point ajouté ({today_str}, TRV={trv_kwh}, best={best_market})")
+        elif last_trv != trv_kwh:
+            # Même mois mais tarif changé — met à jour le dernier point
+            historique[-1]["kwh_base"] = round(trv_kwh, 4)
+            historique[-1]["best_market"] = round(best_market, 4) if best_market else None
+            historique[-1]["date"] = today_str
+            print(f"  Historique : point mis à jour ({today_str}, TRV={trv_kwh})")
+        else:
+            print(f"  Historique : aucun changement")
 
     with open(TARIFS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
