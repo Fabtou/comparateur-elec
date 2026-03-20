@@ -1,0 +1,40 @@
+name: Mise à jour hebdomadaire des tarifs
+
+on:
+  schedule:
+    # Chaque lundi à 06h00 UTC (juste après les mises à jour du 1er du mois)
+    - cron: "0 6 * * 1"
+  workflow_dispatch: # déclenchement manuel possible
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scrape tarifs
+        run: python scripts/scrape_tarifs.py
+
+      - name: Vérifier les changements
+        id: changes
+        run: |
+          git diff --quiet tarifs.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit & push si changement
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          DATE=$(date -u "+%d/%m/%Y")
+          git add tarifs.json
+          git commit -m "chore: mise à jour tarifs électricité — $DATE"
+          git push
