@@ -307,7 +307,7 @@
 
 <script>
 let data = null;
-let conso = 5700, kva = 6, myHcPct = 0.30;
+let conso = 5700, kva = 6, myHcPct = 0.30; // kva fixed at 6, no UI control on this page
 
 // ── Load ──────────────────────────────────────────────────────────────
 async function load() {
@@ -326,7 +326,6 @@ async function load() {
     } catch(e) {}
 
     document.getElementById('inp-conso').value = conso;
-    document.getElementById('sel-kva').value = kva;
     document.getElementById('inp-hc').value = Math.round(myHcPct * 100);
     document.getElementById('sl-hc').value = Math.round(myHcPct * 100);
     render();
