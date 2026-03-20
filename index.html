@@ -83,9 +83,9 @@
     .fbtn:hover{border-color:var(--border2);color:var(--text)}
     .fbtn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
-    .tscroll{border-radius:var(--r);border:1px solid var(--border);overflow-x:auto}
+    .tscroll{border-radius:var(--r);border:1px solid var(--border);overflow-x:auto;max-height:75vh;overflow-y:auto}
     table{width:100%;border-collapse:collapse;background:var(--surface);min-width:920px}
-    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;position:sticky;top:53px;z-index:10;box-shadow:0 2px 4px rgba(0,0,0,.06)
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border)
     thead th:first-child{text-align:left;min-width:190px}
     thead th.th-c{text-align:center}
     thead th.sortable{cursor:pointer;user-select:none;transition:color .1s}
@@ -518,7 +518,7 @@ function render() {
       : '<span class="mode-pill pill-hc">HC / HP</span>';
 
     const souscBtn = o.url
-      ? `<a href="${o.url}" target="_blank" rel="noopener" class="souscrire-btn">Voir <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg></a>`
+      ? `<a href="${o.url}" target="_blank" rel="noopener" class="souscrire-btn">Voir <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" style="width:10px;height:10px;flex-shrink:0"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg></a>`
       : '<span class="na">—</span>';
 
     const cls = [
