@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparateur électricité France</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #F7F5F0;
+      --surface:   #FFFFFF;
+      --surface2:  #F2EFE9;
+      --border:    #E2DDD4;
+      --border2:   #C8C2B5;
+      --text:      #1A1714;
+      --muted:     #7A7268;
+      --faint:     #A8A199;
+      --accent:    #2B6CB0;
+      --accent-bg: #EBF3FC;
+      --green:     #276749;
+      --green-bg:  #E8F5EE;
+      --amber:     #92400E;
+      --amber-bg:  #FEF3C7;
+      --red:       #9B1C1C;
+      --red-bg:    #FEE2E2;
+      --best:      #134E4A;
+      --best-bg:   #CCFBF1;
+      --radius:    10px;
+      --radius-sm: 6px;
+      --mono:      'DM Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+      --shadow:    0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--text);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg { width: 18px; height: 18px; fill: var(--bg); }
+
+    h1 {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -.02em;
+    }
+
+    .header-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #updated-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid #A7F3D0;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* ── Simulator card ── */
+    .simulator {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .simulator-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 1.25rem;
+    }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem 2rem;
+      align-items: start;
+    }
+
+    .sim-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap input[type="number"],
+    .input-wrap input[type="range"] {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--border2);
+      padding: 4px 36px 4px 0;
+      outline: none;
+      transition: border-color .2s;
+      -moz-appearance: textfield;
+    }
+
+    .input-wrap input[type="number"]::-webkit-outer-spin-button,
+    .input-wrap input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    .input-wrap input[type="number"]:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .input-unit {
+      position: absolute;
+      right: 0;
+      bottom: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .slider-wrap {
+      margin-top: .75rem;
+    }
+
+    .slider-wrap input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .slider-wrap input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text);
+      cursor: pointer;
+      border: 3px solid var(--surface);
+      box-shadow: 0 0 0 1px var(--border2);
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--faint);
+      font-family: var(--mono);
+      margin-top: 4px;
+    }
+
+    .slider-value {
+      font-family: var(--mono);
+      font-size: 22px;
+      color: var(--text);
+      border-bottom: 2px solid var(--border2);
+      padding-bottom: 2px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .slider-value span.unit {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .sim-explain {
+      margin-top: 1rem;
+      padding: 10px 14px;
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Filters bar ── */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .filters-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-right: .25rem;
+    }
+
+    .filter-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+
+    .filter-btn.active {
+      background: var(--text);
+      color: var(--bg);
+      border-color: var(--text);
+    }
+
+    /* ── Sorting controls ── */
+    .sort-bar {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+
+    .sort-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+
+    .sort-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .12s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sort-btn:hover { background: var(--surface2); color: var(--text); }
+    .sort-btn.active { background: var(--surface); border-color: var(--border); color: var(--text); }
+
+    .sort-arrow { font-size: 10px; }
+
+    /* ── Table ── */
+    .table-scroll {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      min-width: 780px;
+    }
+
+    thead th {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      padding: 12px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    thead th:first-child { text-align: left; min-width: 180px; }
+    thead th.th-center { text-align: center; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--surface2); }
+
+    tbody tr.row-trv {
+      background: var(--accent-bg);
+    }
+    tbody tr.row-trv:hover { background: #D6E8F8; }
+
+    tbody tr.row-best td:first-child {
+      border-left: 3px solid var(--best);
+    }
+
+    td {
+      padding: 13px 16px;
+      font-size: 13px;
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    td:first-child { text-align: left; }
+
+    .provider-name {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .offer-name {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .price-num {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .price-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--faint);
+      margin-top: 1px;
+    }
+
+    .annual-cost {
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .saving {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .saving-pos { background: var(--green-bg); color: var(--green); }
+    .saving-neg { background: var(--red-bg); color: var(--red); }
+    .saving-ref { color: var(--muted); font-size: 11px; font-family: var(--mono); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge-green { background: var(--green-bg); color: var(--green); }
+    .badge-gray  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .badge-amber { background: var(--amber-bg); color: var(--amber); }
+    .badge-accent{ background: var(--accent-bg); color: var(--accent); }
+
+    .type-badge {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .type-fixe  { background: #E0F2FE; color: #075985; }
+    .type-indexe{ background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+    .hc-mode-cell { font-size: 11px; color: var(--muted); }
+
+    /* ── Best tag ── */
+    .best-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 6px;
+      background: var(--best-bg);
+      color: var(--best);
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── Footer note ── */
+    .footnote {
+      margin-top: 1.5rem;
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.7;
+      padding: 0 2px;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      padding: 3rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ── Loading state ── */
+    #loading {
+      padding: 3rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--text);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── HC mode indicator ── */
+    .mode-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .mode-base { background: #FEF9C3; color: #854D0E; }
+    .mode-hc   { background: #E0F2FE; color: #075985; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up { animation: fadeUp .3s ease both; }
+
+    tr.fade-row {
+      animation: fadeUp .2s ease both;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      header { padding: 1rem; }
+      main { padding: 1.25rem 1rem 3rem; }
+      .simulator { padding: 1.25rem; }
+      .sim-grid { gap: 1rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M13 2L4.09 12.26a1 1 0 00.89 1.74H11v8l8.91-10.26a1 1 0 00-.89-1.74H13V2z"/></svg>
+    </div>
+    <div>
+      <h1>Comparateur électricité</h1>
+      <div class="header-meta">France — particuliers — 6 kVA</div>
+    </div>
+  </div>
+  <div id="updated-badge">Chargement…</div>
+</header>
+
+<main>
+
+  <!-- ── Simulateur ── -->
+  <div class="simulator fade-up">
+    <div class="simulator-title">Votre profil de consommation</div>
+    <div class="sim-grid">
+
+      <div class="sim-field">
+        <label>Consommation annuelle</label>
+        <div class="input-wrap">
+          <input type="number" id="conso-input" min="500" max="30000" step="100" value="5700" />
+          <span class="input-unit">kWh</span>
+        </div>
+        <div class="sim-explain">Repère : studio ≈ 1 500 kWh · appartement moyen ≈ 4 500–6 000 kWh · maison tout-électrique ≈ 12 000–18 000 kWh</div>
+      </div>
+
+      <div class="sim-field">
+        <label>Part en heures creuses</label>
+        <div class="slider-value">
+          <span id="hc-pct-display">30</span>
+          <span class="unit">%</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="hc-slider" min="0" max="80" step="5" value="30" />
+          <div class="slider-labels"><span>0%</span><span>40%</span><span>80%</span></div>
+        </div>
+        <div class="sim-explain">
+          Le seuil de rentabilité HC/HP est généralement <strong>~25–30 %</strong> de conso en heures creuses.<br/>
+          En-dessous → option base souvent meilleure.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Filters ── -->
+  <div class="filters-bar fade-up" style="animation-delay:.05s">
+    <span class="filters-label">Filtrer</span>
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="fix">Prix fixe</button>
+    <button class="filter-btn" data-filter="indexe">Indexé</button>
+    <button class="filter-btn" data-filter="vert">100% vert</button>
+  </div>
+
+  <!-- ── Sort ── -->
+  <div class="sort-bar fade-up" style="animation-delay:.07s">
+    <span class="sort-label">Trier par</span>
+    <button class="sort-btn active" data-sort="cost" id="btn-sort-cost">Coût annuel <span class="sort-arrow" id="arrow-cost">↑</span></button>
+    <button class="sort-btn" data-sort="kwh" id="btn-sort-kwh">Prix kWh <span class="sort-arrow" id="arrow-kwh">↑</span></button>
+    <button class="sort-btn" data-sort="saving" id="btn-sort-saving">Économies <span class="sort-arrow" id="arrow-saving">↑</span></button>
+  </div>
+
+  <!-- ── Table ── -->
+  <div class="table-scroll fade-up" style="animation-delay:.1s">
+    <table>
+      <thead>
+        <tr>
+          <th>Fournisseur / Offre</th>
+          <th class="th-center">Type</th>
+          <th>kWh applicable <span id="mode-header-badge" class="mode-tag mode-base">Base</span></th>
+          <th>HC <span style="font-size:9px;font-weight:400">/kWh</span></th>
+          <th>HP <span style="font-size:9px;font-weight:400">/kWh</span></th>
+          <th>Abonnement /an</th>
+          <th>Coût annuel estimé</th>
+          <th>vs TRV</th>
+          <th class="th-center">Vert ?</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr><td colspan="9"><div id="loading"><div class="spinner"></div>Chargement des tarifs…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footnote">
+    * Coût annuel estimé = (kWh applicable × kWh consommés) + abonnement. En mode HC/HP : kWh applicable = moyenne pondérée (HC × % HC + HP × % HP).<br/>
+    Tarifs TTC pour un compteur 6 kVA. Données mises à jour automatiquement chaque semaine. Vérifiez les tarifs directement sur le site du fournisseur avant toute souscription.
+  </div>
+
+</main>
+
+<script>
+// ──────────────────────────────────────────
+// State
+// ──────────────────────────────────────────
+let tarifs = null;
+let conso = 5700;
+let hcPct = 0.30;
+let filter = 'all';
+let sortKey = 'cost';
+let sortDir = 1; // 1 = ascending
+
+// ──────────────────────────────────────────
+// Fetch tarifs.json
+// ──────────────────────────────────────────
+async function loadTarifs() {
+  try {
+    const r = await fetch('./tarifs.json?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    tarifs = await r.json();
+    renderUpdatedBadge();
+    render();
+  } catch (e) {
+    document.getElementById('table-body').innerHTML =
+      `<tr><td colspan="9"><div class="empty-state">Impossible de charger les tarifs (${e.message}).<br/>Assurez-vous que tarifs.json est bien dans le même dossier.</div></td></tr>`;
+    document.getElementById('updated-badge').textContent = 'Erreur de chargement';
+  }
+}
+
+// ──────────────────────────────────────────
+// Helpers
+// ──────────────────────────────────────────
+function fmt(n, d = 4) {
+  if (n == null) return '—';
+  return n.toFixed(d);
+}
+
+function calcAnnualCost(p) {
+  const hpPct = 1 - hcPct;
+  const hasHC = p.kwh_hc != null && p.kwh_hp != null;
+
+  let kwh_used;
+  if (hasHC && hcPct >= 0.25) {
+    // Weighted average in HC/HP mode
+    kwh_used = p.kwh_hc * hcPct + p.kwh_hp * hpPct;
+  } else {
+    kwh_used = p.kwh_base;
+  }
+  return kwh_used * conso + p.abo_annuel;
+}
+
+function calcTRVCost() {
+  const trv = tarifs.trv;
+  const hpPct = 1 - hcPct;
+  const hasHC = trv.kwh_hc && trv.kwh_hp;
+  let kwh_used;
+  if (hasHC && hcPct >= 0.25) {
+    kwh_used = trv.kwh_hc * hcPct + trv.kwh_hp * hpPct;
+  } else {
+    kwh_used = trv.kwh_base;
+  }
+  return kwh_used * conso + trv.abo_annuel;
+}
+
+function isHCMode(p) {
+  return p.kwh_hc != null && p.kwh_hp != null && hcPct >= 0.25;
+}
+
+// ──────────────────────────────────────────
+// Render
+// ──────────────────────────────────────────
+function renderUpdatedBadge() {
+  const badge = document.getElementById('updated-badge');
+  if (!tarifs?.meta?.updated_at) return;
+  const d = new Date(tarifs.meta.updated_at);
+  const s = d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+  badge.textContent = '● Tarifs du ' + s;
+}
+
+function render() {
+  if (!tarifs) return;
+
+  // Mode badge in header
+  const modeEl = document.getElementById('mode-header-badge');
+  if (hcPct >= 0.25) {
+    modeEl.textContent = 'HC/HP (' + Math.round(hcPct * 100) + '% HC)';
+    modeEl.className = 'mode-tag mode-hc';
+  } else {
+    modeEl.textContent = 'Base';
+    modeEl.className = 'mode-tag mode-base';
+  }
+
+  const trvCost = calcTRVCost();
+
+  // Filter
+  let rows = tarifs.fournisseurs.filter(p => {
+    if (filter === 'fix')    return p.type === 'fixe';
+    if (filter === 'indexe') return p.type === 'indexe';
+    if (filter === 'vert')   return p.vert;
+    return true;
+  });
+
+  // Sort
+  rows.sort((a, b) => {
+    let va, vb;
+    if (sortKey === 'cost') {
+      va = calcAnnualCost(a); vb = calcAnnualCost(b);
+    } else if (sortKey === 'kwh') {
+      va = a.kwh_base; vb = b.kwh_base;
+    } else {
+      va = trvCost - calcAnnualCost(a);
+      vb = trvCost - calcAnnualCost(b);
+    }
+    return (va - vb) * sortDir;
+  });
+
+  // Identify best (non-TRV, non-ref)
+  const nonRef = rows.filter(p => !p.is_trv);
+  const bestCost = nonRef.length ? Math.min(...nonRef.map(calcAnnualCost)) : Infinity;
+
+  const tbody = document.getElementById('table-body');
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state">Aucune offre ne correspond à ce filtre.</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map((p, i) => {
+    const cost = calcAnnualCost(p);
+    const saving = trvCost - cost;
+    const isTRV = !!p.is_trv;
+    const isBest = !isTRV && Math.abs(cost - bestCost) < 0.5;
+    const hcMode = isHCMode(p);
+
+    // Saving badge
+    let savingHtml;
+    if (isTRV) {
+      savingHtml = '<span class="saving-ref">référence</span>';
+    } else if (saving >= 0) {
+      savingHtml = `<span class="saving saving-pos">−${Math.round(saving)} €</span>`;
+    } else {
+      savingHtml = `<span class="saving saving-neg">+${Math.round(Math.abs(saving))} €</span>`;
+    }
+
+    // Vert badge
+    const vertHtml = p.vert
+      ? `<span class="badge badge-green">${p.label_vert ? '✓' : '✓'} verte</span>`
+      : p.vert_option
+      ? `<span class="badge badge-gray">option</span>`
+      : `<span class="badge badge-gray">non</span>`;
+
+    // Type badge
+    const typeHtml = p.type === 'fixe'
+      ? `<span class="type-badge type-fixe">Fixe</span>`
+      : `<span class="type-badge type-indexe">Indexé</span>`;
+
+    // HC / HP cells
+    const hcHtml = p.kwh_hc != null
+      ? `<span class="price-num">${fmt(p.kwh_hc)} €</span>`
+      : `<span style="color:var(--faint)">—</span>`;
+
+    const hpHtml = p.kwh_hp != null
+      ? `<span class="price-num">${fmt(p.kwh_hp)} €</span>`
+      : `<span style="color:var(--faint)">—</span>`;
+
+    // Effective kWh shown
+    const effKwh = hcMode && p.kwh_hc != null
+      ? (p.kwh_hc * hcPct + p.kwh_hp * (1 - hcPct))
+      : p.kwh_base;
+
+    const effKwhHtml = `<span class="price-num">${fmt(effKwh)} €</span>`
+      + (hcMode && p.kwh_hc != null
+          ? `<div class="price-sub">moy. pond. HC/HP</div>`
+          : `<div class="price-sub">tarif base</div>`);
+
+    return `
+      <tr class="${isTRV ? 'row-trv' : ''} ${isBest ? 'row-best' : ''} fade-row" style="animation-delay:${i * 0.02}s">
+        <td>
+          <div class="provider-name">
+            ${p.nom}
+            ${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}
+          </div>
+          <div class="offer-name">${p.offre}</div>
+        </td>
+        <td style="text-align:center">${typeHtml}</td>
+        <td>${effKwhHtml}</td>
+        <td>${hcHtml}</td>
+        <td>${hpHtml}</td>
+        <td><span class="price-num">${fmt(p.abo_annuel, 2)} €</span></td>
+        <td><span class="annual-cost">${Math.round(cost)} €</span></td>
+        <td>${savingHtml}</td>
+        <td style="text-align:center">${vertHtml}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ──────────────────────────────────────────
+// Events
+// ──────────────────────────────────────────
+document.getElementById('conso-input').addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10);
+  if (!isNaN(v) && v >= 100 && v <= 50000) {
+    conso = v;
+    render();
+  }
+});
+
+const hcSlider = document.getElementById('hc-slider');
+const hcDisplay = document.getElementById('hc-pct-display');
+
+hcSlider.addEventListener('input', e => {
+  hcPct = parseInt(e.target.value, 10) / 100;
+  hcDisplay.textContent = e.target.value;
+  render();
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filter = btn.dataset.filter;
+    render();
+  });
+});
+
+const sortKeys = ['cost', 'kwh', 'saving'];
+const arrows = { cost: 'arrow-cost', kwh: 'arrow-kwh', saving: 'arrow-saving' };
+
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.sort;
+    if (sortKey === key) {
+      sortDir *= -1;
+    } else {
+      sortKey = key;
+      sortDir = 1;
+    }
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    sortKeys.forEach(k => {
+      const a = document.getElementById('arrow-' + k);
+      if (a) a.textContent = sortDir === 1 ? '↑' : '↓';
+    });
+    render();
+  });
+});
+
+// ──────────────────────────────────────────
+// Boot
+// ──────────────────────────────────────────
+loadTarifs();
+</script>
+</body>
+</html>
