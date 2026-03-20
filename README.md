@@ -1,103 +1,108 @@
-# ⚡ Comparateur Électricité France
+# Comparateur électricité 🐅
 
-Site statique monopage qui compare les tarifs d'électricité des principaux fournisseurs français, avec mise à jour automatique chaque semaine via GitHub Actions.
+Site statique comparant les tarifs d'électricité des principaux fournisseurs français pour particuliers. Zéro dépendance, zéro framework, zéro cookie. Mis à jour automatiquement chaque semaine via GitHub Actions.
 
-## Structure du projet
+🔗 **[fabtou.github.io/comparateur-elec](https://Fabtou.github.io/comparateur-elec/)**
+
+---
+
+## Pages
+
+| Page | Description |
+|------|-------------|
+| `index.html` | Comparateur de tarifs — simulation par consommation, kVA, part HC/HP |
+| `calculateur-hc.html` | Calculateur de rentabilité HC/HP — seuil par fournisseur, kWh moyen pondéré |
+| `conseils.html` | Conseils pratiques pour réduire sa consommation et ses dépenses |
+
+## Structure
 
 ```
 comparateur-elec/
-├── index.html              # Page principale (HTML/CSS/JS pur, zéro dépendance)
-├── tarifs.json             # Tarifs TTC — mis à jour automatiquement
+├── index.html
+├── calculateur-hc.html
+├── conseils.html
+├── tarifs.json                        # Source de vérité des tarifs (42 offres, 21 fournisseurs)
 ├── scripts/
-│   └── scrape_tarifs.py    # Script Python de scraping (lancé par GitHub Actions)
-├── .github/
-│   └── workflows/
-│       └── update-tarifs.yml  # Workflow GitHub Actions (chaque lundi 06h UTC)
-└── README.md
+│   └── scrape_tarifs.py               # Scraper hebdomadaire (Selectra / Kelwatt)
+├── .github/workflows/
+│   └── update-tarifs.yml              # GitHub Actions — chaque lundi 06h UTC
+├── sitemap.xml
+├── robots.txt
+└── manifest.json
 ```
 
-## Déploiement en 5 minutes
+## Données
 
-### 1. Créer le dépôt GitHub
+Les tarifs sont stockés dans `tarifs.json`. Chaque fournisseur y figure en double : une entrée mode `base` et une entrée mode `hc`. Le champ `meta.updated_at` est utilisé par le site pour afficher un avertissement si les données ont plus de 15 jours.
+
+### Ajouter ou modifier un fournisseur
+
+Éditer directement `tarifs.json`. Structure d'une offre :
+
+```json
+{
+  "id": "fournisseur-offre-base",
+  "fournisseur": "Nom Fournisseur",
+  "offre": "Nom de l'offre",
+  "mode": "base",
+  "type": "fixe",
+  "vert": true,
+  "label_vert": "Garanties d'Origine",
+  "actif": true,
+  "kwh_base": 0.1673,
+  "kwh_base_9kva_plus": null,
+  "kwh_hc": null,
+  "kwh_hp": null,
+  "abo_annuel": 187.80,
+  "sans_engagement": true,
+  "validite": "2027-03-31",
+  "url": "https://..."
+}
+```
+
+Pour une offre HC/HP, dupliquer l'entrée avec `"mode": "hc"` et renseigner `kwh_hc` et `kwh_hp` (laisser `kwh_base` à `null`).
+
+### Mise à jour manuelle
+
+Les tarifs évoluent généralement deux fois par an (février et août). Pour mettre à jour sans attendre le scraper :
+
+```bash
+# Éditer tarifs.json, puis :
+git add tarifs.json
+git commit -m "chore: maj tarifs février 2026"
+git push
+```
+
+## Déploiement
+
+### GitHub Pages
 
 ```bash
 git init
 git add .
-git commit -m "init: comparateur électricité"
-git branch -M main
+git commit -m "init"
 git remote add origin https://github.com/VOTRE_USER/comparateur-elec.git
 git push -u origin main
 ```
 
-### 2. Activer GitHub Pages
+Puis dans le dépôt : **Settings → Pages → Branch : main / root**
 
-Dans votre dépôt GitHub :  
-**Settings → Pages → Source : Deploy from a branch → Branch : main / root**
+### Permissions GitHub Actions
 
-Votre site sera disponible sur `https://VOTRE_USER.github.io/comparateur-elec/`
+**Settings → Actions → General → Workflow permissions → Read and write permissions**
 
-### 3. Vérifier les permissions GitHub Actions
+Le workflow tourne automatiquement chaque lundi à 06h UTC. Déclenchement manuel : **Actions → Mise à jour hebdomadaire des tarifs → Run workflow**
 
-**Settings → Actions → General → Workflow permissions**  
-→ Cochez **"Read and write permissions"**
+### Alternatives (Netlify, Vercel)
 
-Le workflow tourne automatiquement chaque lundi à 06h00 UTC.  
-Vous pouvez aussi le déclencher manuellement : **Actions → Mise à jour hebdomadaire des tarifs → Run workflow**
-
----
-
-## Mise à jour manuelle des tarifs
-
-Si vous souhaitez mettre à jour `tarifs.json` sans attendre le scraper :
-
-```bash
-python3 scripts/scrape_tarifs.py
-git add tarifs.json
-git commit -m "chore: maj tarifs manuelle"
-git push
-```
-
-## Ajouter un fournisseur
-
-Ajoutez une entrée dans `tarifs.json` :
-
-```json
-{
-  "id": "mint-energie-online-green",
-  "nom": "Mint Énergie",
-  "offre": "Online & Green",
-  "type": "indexe",
-  "vert": true,
-  "vert_option": false,
-  "label_vert": "Garanties d'Origine",
-  "kwh_base": 0.1767,
-  "kwh_hc": 0.1490,
-  "kwh_hp": 0.1990,
-  "abo_annuel": 187.80,
-  "sans_engagement": true,
-  "url": "https://www.mint-energie.com"
-}
-```
-
-Puis ajoutez l'URL de scraping dans `scripts/scrape_tarifs.py` dans le dictionnaire `SCRAPE_TARGETS`.
-
-## Déploiement alternatif : Netlify / Vercel
-
-**Netlify** : glissez le dossier sur [app.netlify.com/drop](https://app.netlify.com/drop)  
-**Vercel** : `npx vercel` dans le dossier
-
-Pour le scraping automatique sur Netlify/Vercel, le GitHub Actions reste la solution recommandée (il push vers GitHub, le déploiement continu se charge du reste).
+Le site est un dossier de fichiers statiques — glisser-déposer sur [netlify.com/drop](https://app.netlify.com/drop) fonctionne immédiatement. Le GitHub Actions continue de mettre à jour `tarifs.json` sur le dépôt, le déploiement continu se charge du reste.
 
 ## Limites du scraper
 
-Le scraper est basé sur des expressions régulières appliquées sur les pages HTML de Selectra et Kelwatt. Si ces sites modifient leur structure HTML, le scraper peut cesser de fonctionner. Dans ce cas :
+Le scraper (`scripts/scrape_tarifs.py`) utilise des expressions régulières sur les pages HTML de Selectra et Kelwatt. Il est fragile par nature — si ces sites modifient leur structure, il cessera de fonctionner silencieusement. En cas d'échec, une issue GitHub est automatiquement créée avec un lien vers les logs.
 
-1. Vérifiez les logs GitHub Actions
-2. Mettez à jour les patterns dans `scrape_tarifs.py`
-3. Ou mettez à jour `tarifs.json` manuellement
-
-Les tarifs évoluent généralement **deux fois par an** (1er février et 1er août).
+La mise à jour manuelle de `tarifs.json` deux fois par an reste la méthode la plus fiable.
 
 ## Licence
 
-MIT — libre d'utilisation et de modification.
+MIT
