@@ -173,6 +173,36 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .fade{animation:fadeUp .3s ease both}
     @media(max-width:640px){header{padding:1rem}main{padding:1rem 1rem 3rem}.sim{padding:1.1rem}.sim-grid{grid-template-columns:1fr}}
+
+    /* ── Mobile table ── */
+    @media(max-width:720px){
+      .col-desktop{display:none}
+      .tscroll{border-radius:var(--r)}
+      table{min-width:0;width:100%}
+      thead th:first-child{min-width:140px}
+      td,thead th{padding:9px 10px;font-size:12px}
+      .num-big{font-size:14px}
+    }
+    @media(min-width:721px){.col-mobile{display:none}}
+
+    /* ── Bottom sheet ── */
+    .sheet-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end}
+    .sheet-overlay.open{display:flex}
+    .sheet{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-height:85vh;overflow-y:auto;padding:1.25rem 1.25rem 2rem;animation:slideUp .25s ease}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:0 auto 1.25rem}
+    .sheet-close{position:absolute;top:1rem;right:1rem;width:28px;height:28px;border-radius:50%;border:none;background:var(--surface2);cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+    .sheet-provider{font-size:18px;font-weight:500;margin-bottom:.2rem}
+    .sheet-offer{font-size:13px;color:var(--muted);margin-bottom:1rem}
+    .sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem}
+    .sheet-cell{background:var(--surface2);border-radius:var(--rs);padding:.75rem}
+    .sheet-cell-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.25rem}
+    .sheet-cell-val{font-family:var(--mono);font-size:15px;font-weight:500}
+    .sheet-cell-sub{font-family:var(--mono);font-size:11px;color:var(--faint);margin-top:2px}
+    .sheet-souscire{display:block;width:100%;padding:.85rem;border-radius:var(--r);border:none;background:var(--text);color:var(--bg);font-family:var(--sans);font-size:14px;font-weight:500;text-align:center;text-decoration:none;margin-top:.75rem;cursor:pointer}
+    .sheet-souscire:hover{opacity:.9}
+    .detail-btn{background:none;border:1px solid var(--border);border-radius:var(--rs);padding:3px 8px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--sans)}
+    .detail-btn:hover{background:var(--surface2)}
   </style>
 </head>
 <body>
@@ -237,15 +267,16 @@
       <thead>
         <tr>
           <th>Fournisseur / offre</th>
-          <th class="th-c">Type</th>
+          <th class="th-c col-desktop">Type</th>
           <th class="sortable sorted" data-col="cost">Coût annuel <span class="sort-arrow">↑</span></th>
           <th class="sortable" data-col="sav">vs TRV <span class="sort-arrow"></span></th>
-          <th class="sortable" data-col="kwh_base">kWh base <span class="sort-arrow"></span></th>
-          <th>kWh HC</th>
-          <th>kWh HP</th>
-          <th class="sortable" data-col="abo">Abo. /an <span class="sort-arrow"></span></th>
-          <th class="th-c">Vert</th>
-          <th class="th-c">Souscrire</th>
+          <th class="sortable col-desktop" data-col="kwh_base">kWh base <span class="sort-arrow"></span></th>
+          <th class="col-desktop">kWh HC</th>
+          <th class="col-desktop">kWh HP</th>
+          <th class="sortable col-desktop" data-col="abo">Abo. /an <span class="sort-arrow"></span></th>
+          <th class="th-c col-desktop">Vert</th>
+          <th class="th-c col-desktop">Souscrire</th>
+          <th class="th-c col-mobile"></th>
         </tr>
       </thead>
       <tbody id="tbody"><tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Chargement…</td></tr></tbody>
@@ -490,21 +521,42 @@ function render() {
       isBest ? 'row-best' : ''
     ].filter(Boolean).join(' ');
 
-    rows += `<tr class="${cls}">
+    // Build data attrs for bottom sheet
+    const dataAttrs = [
+      `data-id="${o.id}"`,
+      `data-nom="${o.fournisseur}"`,
+      `data-offre="${o.offre}"`,
+      `data-mode="${o.mode}"`,
+      `data-cost="${cost !== null ? Math.round(cost) : ''}"`,
+      `data-sav="${saving !== null ? Math.round(saving) : ''}"`,
+      `data-kwh="${kwh.toFixed(4)}"`,
+      `data-hc="${o.kwh_hc != null ? o.kwh_hc.toFixed(4) : ''}"`,
+      `data-hp="${o.kwh_hp != null ? o.kwh_hp.toFixed(4) : ''}"`,
+      `data-abo="${abo.toFixed(2)}"`,
+      `data-vert="${o.vert ? (o.label_vert || 'oui') : (o.vert_option ? 'option' : 'non')}"`,
+      `data-type="${o.type}"`,
+      `data-eng="${o.sans_engagement ? 'Sans engagement' : 'Avec engagement'}"`,
+      `data-valid="${o.validite ? fmtValidite(o.validite) : ''}"`,
+      `data-url="${o.url || ''}"`,
+      `data-na="${isNA ? '1' : '0'}"`
+    ].join(' ');
+
+    rows += `<tr class="${cls}" ${dataAttrs}>
       <td>
         <div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}</div>
         <div class="offer-name">${o.offre}</div>
         ${modePill}${validTag}
       </td>
-      <td style="text-align:center">${typeHtml}</td>
+      <td style="text-align:center" class="col-desktop">${typeHtml}</td>
       <td>${costHtml}</td>
       <td>${savHtml}</td>
-      <td><span class="num">${kwh.toFixed(4)} €</span></td>
-      <td>${hcCell}</td>
-      <td>${hpCell}</td>
-      <td><span class="num">${abo.toFixed(2)} €</span><div class="num-sub">/an · ${kva} kVA</div></td>
-      <td style="text-align:center">${vertHtml}</td>
-      <td style="text-align:center">${souscBtn}</td>
+      <td class="col-desktop"><span class="num">${kwh.toFixed(4)} €</span></td>
+      <td class="col-desktop">${hcCell}</td>
+      <td class="col-desktop">${hpCell}</td>
+      <td class="col-desktop"><span class="num">${abo.toFixed(2)} €</span><div class="num-sub">/an · ${kva} kVA</div></td>
+      <td style="text-align:center" class="col-desktop">${vertHtml}</td>
+      <td style="text-align:center" class="col-desktop">${souscBtn}</td>
+      <td style="text-align:center" class="col-mobile"><button class="detail-btn" onclick="openSheet(this.closest('tr'))">›</button></td>
     </tr>`;
   });
 
@@ -576,6 +628,64 @@ document.getElementById('faq').innerHTML = faqs.map((f,i) => `
 function toggleFaq(i) { document.getElementById('faq-'+i).classList.toggle('open'); }
 
 load();
+</script>
+<!-- Bottom sheet -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet(event)">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+    <div class="sheet-provider" id="sh-provider"></div>
+    <div class="sheet-offer" id="sh-offer"></div>
+    <div class="sheet-grid" id="sh-grid"></div>
+    <div id="sh-footer"></div>
+  </div>
+</div>
+
+<script>
+function openSheet(tr) {
+  const d = tr.dataset;
+  if (d.na === '1') return;
+
+  document.getElementById('sh-provider').textContent = d.nom;
+  document.getElementById('sh-offer').innerHTML =
+    d.offre + ' &nbsp;' +
+    (d.mode === 'hc' ? '<span class="mode-pill pill-hc">HC / HP</span>' : '<span class="mode-pill pill-base">Base</span>');
+
+  const cells = [
+    { label: 'Coût annuel estimé', val: d.cost ? d.cost + ' €' : '—', sub: '' },
+    { label: 'vs Tarif réglementé', val: d.sav ? (d.sav > 0 ? '−' : '+') + Math.abs(d.sav) + ' €/an' : '—', sub: '' },
+    { label: 'kWh base', val: d.kwh + ' €', sub: '' },
+    { label: 'Abonnement /an', val: d.abo + ' €', sub: '' },
+    { label: 'kWh HC', val: d.hc || '—', sub: '' },
+    { label: 'kWh HP', val: d.hp || '—', sub: '' },
+    { label: 'Électricité verte', val: d.vert, sub: '' },
+    { label: 'Contrat', val: d.type === 'fixe' ? 'Prix fixe' : 'Indexé', sub: d.valid || '' },
+    { label: 'Engagement', val: d.eng, sub: '' },
+  ];
+
+  document.getElementById('sh-grid').innerHTML = cells.map(c =>
+    `<div class="sheet-cell">
+      <div class="sheet-cell-label">${c.label}</div>
+      <div class="sheet-cell-val">${c.val}</div>
+      ${c.sub ? `<div class="sheet-cell-sub">${c.sub}</div>` : ''}
+    </div>`
+  ).join('');
+
+  document.getElementById('sh-footer').innerHTML = d.url
+    ? `<a href="${d.url}" target="_blank" rel="noopener" class="sheet-souscire">Voir l'offre →</a>`
+    : '';
+
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSheet(e) {
+  if (e && e.target !== document.getElementById('sheet-overlay')) return;
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 </script>
 </body>
 </html>
