@@ -620,14 +620,16 @@ function toggleFaq(i) { document.getElementById('faq-'+i).classList.toggle('open
 
 function drawChart() {
   const ctx = document.getElementById('trv-chart');
-  if (!ctx) return;
+  if (!ctx || !data || !data.historique || !data.historique.length) return;
 
-  // Historical TRV kWh base data (6 kVA, TTC, option base)
-  const labels = ['Août 2022','Fév. 2023','Août 2023','Fév. 2024','Août 2024','Fév. 2025','Août 2025','Fév. 2026'];
-  const trvData = [0.1740, 0.2062, 0.2276, 0.2516, 0.2516, 0.1952, 0.1952, 0.1940];
-
-  // Best market offer per period (approximate)
-  const bestData = [null, null, null, 0.2100, 0.1900, 0.1750, 0.1720, 0.1673];
+  // Read from tarifs.json historique — updated automatically by scraper
+  const hist = data.historique;
+  const labels = hist.map(p => {
+    const d = new Date(p.date);
+    return d.toLocaleDateString('fr-FR', {month:'short', year:'numeric'});
+  });
+  const trvData = hist.map(p => p.kwh_base);
+  const bestData = hist.map(p => p.best_market || null);
 
   const style = getComputedStyle(document.documentElement);
   const colorText   = '#7A7268';
