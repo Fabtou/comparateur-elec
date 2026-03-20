@@ -29,8 +29,22 @@
       --red:#9B1C1C;--red-bg:#FEE2E2;
       --amber:#92400E;--amber-bg:#FEF3C7;
       --best:#0F766E;--best-bg:#CCFBF1;
+      --chart-trv:#4A9EE8;--chart-best:#34D399;--chart-grid:#E2DDD4;--chart-text:#7A7268;
       --r:10px;--rs:6px;
       --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0F0F0F;--surface:#1A1A1A;--surface2:#222222;
+        --border:#2E2E2E;--border2:#444444;
+        --text:#F0EDE8;--muted:#8A8480;--faint:#555250;
+        --accent:#4A9EE8;--accent-bg:#0D2235;
+        --green:#34D399;--green-bg:#052E1C;
+        --red:#F87171;--red-bg:#2D0A0A;
+        --amber:#FCD34D;--amber-bg:#2D1F00;
+        --best:#34D399;--best-bg:#052E1C;
+        --chart-trv:#4A9EE8;--chart-best:#34D399;--chart-grid:#2E2E2E;--chart-text:#8A8480;
+      }
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
@@ -211,13 +225,13 @@
     .detail-btn:hover{background:var(--surface2)}
 
     /* ── Alert banner ── */
-    .alert-banner{display:none;background:#FEF3C7;border-bottom:1px solid #FCD34D;padding:.6rem 2rem;font-size:12px;color:#92400E;gap:8px;align-items:center}
+    .alert-banner{display:none;background:var(--amber-bg);border-bottom:1px solid var(--amber);padding:.6rem 2rem;font-size:12px;color:var(--amber);gap:8px;align-items:center}
     .alert-banner.show{display:flex}
-    .alert-banner a{color:#92400E;font-weight:500}
+    .alert-banner a{color:var(--amber);font-weight:500}
 
     /* ── Fournisseur actuel ── */
-    .current-row td{background:#FFF7ED !important;border-left:3px solid #F59E0B !important}
-    .current-row:hover td{background:#FEF3C7 !important}
+    .current-row td{background:var(--amber-bg) !important;border-left:3px solid var(--amber) !important}
+    .current-row:hover td{background:var(--amber-bg) !important;filter:brightness(1.05)}
     .current-tag{display:inline-block;font-size:9px;font-weight:500;padding:2px 6px;background:#FEF3C7;color:#92400E;border-radius:4px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
     .saving-current{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:500;padding:3px 8px;border-radius:var(--rs);background:#DCFCE7;color:#166534}
 
@@ -484,7 +498,7 @@ function render() {
     if (currentOffers.length) {
       const currentCost = Math.min(...currentOffers.map(offreCost).filter(c => c !== null));
       const saving = currentCost - bestCost;
-      currentCard = `<div class="scard" style="border-color:#F59E0B;background:#FFFBEB"><div class="scard-label">Vs votre fournisseur</div><div class="scard-val" style="color:#92400E">${Math.round(currentCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie possible : <strong>−${Math.round(saving)} €/an</strong></div></div>`;
+      currentCard = `<div class="scard" style="border-color:var(--amber);background:var(--amber-bg)"><div class="scard-label">Vs votre fournisseur</div><div class="scard-val" style="color:var(--amber)">${Math.round(currentCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie possible : <strong>−${Math.round(saving)} €/an</strong></div></div>`;
     }
   }
 
@@ -632,10 +646,11 @@ function drawChart() {
   const bestData = hist.map(p => p.best_market || null);
 
   const style = getComputedStyle(document.documentElement);
-  const colorText   = '#7A7268';
-  const colorGrid   = '#E2DDD4';
-  const colorTRV    = '#185FA5';
-  const colorBest   = '#0F766E';
+  const colorText = style.getPropertyValue('--chart-text').trim() || '#7A7268';
+  const colorGrid = style.getPropertyValue('--chart-grid').trim() || '#E2DDD4';
+  const colorTRV  = style.getPropertyValue('--chart-trv').trim()  || '#4A9EE8';
+  const colorBest = style.getPropertyValue('--chart-best').trim() || '#34D399';
+  const colorSurf = style.getPropertyValue('--surface').trim()    || '#ffffff';
 
   // Retina/HiDPI fix — multiply by devicePixelRatio
   const dpr = window.devicePixelRatio || 1;
@@ -658,7 +673,8 @@ function drawChart() {
   function xPos(i) { return pad.left + (i / (labels.length - 1)) * cw; }
   function yPos(v) { return pad.top + (1 - (v - minV) / (maxV - minV)) * ch; }
 
-  c.clearRect(0, 0, W, H);
+  c.fillStyle = colorSurf;
+  c.fillRect(0, 0, W, H);
 
   // Grid lines
   c.strokeStyle = colorGrid; c.lineWidth = 0.5;
@@ -719,6 +735,7 @@ function drawChart() {
 }
 
 load();
+window.addEventListener('resize', () => { drawChart(); });
 </script>
 
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet(event)">
