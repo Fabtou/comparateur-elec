@@ -209,6 +209,27 @@
     .sheet-souscire:hover{opacity:.9}
     .detail-btn{background:none;border:1px solid var(--border);border-radius:var(--rs);padding:3px 8px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--sans)}
     .detail-btn:hover{background:var(--surface2)}
+
+    /* ── Alert banner ── */
+    .alert-banner{display:none;background:#FEF3C7;border-bottom:1px solid #FCD34D;padding:.6rem 2rem;font-size:12px;color:#92400E;gap:8px;align-items:center}
+    .alert-banner.show{display:flex}
+    .alert-banner a{color:#92400E;font-weight:500}
+
+    /* ── Fournisseur actuel ── */
+    .current-row td{background:#FFF7ED !important;border-left:3px solid #F59E0B !important}
+    .current-row:hover td{background:#FEF3C7 !important}
+    .current-tag{display:inline-block;font-size:9px;font-weight:500;padding:2px 6px;background:#FEF3C7;color:#92400E;border-radius:4px;margin-left:5px;vertical-align:middle;text-transform:uppercase;letter-spacing:.04em}
+    .saving-current{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:500;padding:3px 8px;border-radius:var(--rs);background:#DCFCE7;color:#166534}
+
+    /* ── HC link ── */
+    .hc-link{display:none;font-size:11px;color:var(--accent);text-decoration:none;margin-top:.4rem}
+    .hc-link.show{display:inline-flex;align-items:center;gap:4px}
+    .hc-link:hover{text-decoration:underline}
+
+    /* ── Graph ── */
+    .trv-graph{margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+    .trv-graph-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:1rem}
+    .trv-graph canvas{width:100% !important}
   </style>
 </head><body>
 <header>
@@ -218,6 +239,11 @@
   </div>
   <div id="badge-date">Chargement…</div>
 </header>
+
+<div class="alert-banner" id="alert-banner">
+  ⚠️ Les tarifs affichés datent de plus de 15 jours — ils peuvent ne plus être à jour.
+  <a href="https://github.com/Fabtou/comparateur-elec/actions" target="_blank" rel="noopener">Vérifier le scraper →</a>
+</div>
 
 <main>
   <div class="sim fade">
@@ -250,6 +276,17 @@
           <input type="range" id="sl-hc" min="0" max="80" step="1" value="30" />
         </div>
         <div class="sim-hint">Seuil de rentabilité HC/HP ≈ <strong>25–30%</strong>. En dessous, l'option base est souvent meilleure.</div>
+        <a class="hc-link" id="hc-link" href="https://www.enedis.fr/heures-creuses" target="_blank" rel="noopener">
+          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg>
+          Vérifier mes horaires HC sur Enedis
+        </a>
+      </div>
+      <div class="sim-field">
+        <label>Mon fournisseur actuel</label>
+        <select class="kva-select" id="sel-current" style="font-size:16px">
+          <option value="">— Aucun (ne pas comparer)</option>
+        </select>
+        <div class="sim-hint">Sélectionnez votre fournisseur actuel pour voir votre économie potentielle en changeant.</div>
       </div>
     </div>
   </div>
@@ -263,6 +300,10 @@
     <button class="fbtn" data-f="indexe">Indexé</button>
     <button class="fbtn" data-f="vert">Vert</button>
     <button class="fbtn" data-f="libre">Sans engagement</button>
+    <div class="toolbar-sep"></div>
+    <select id="filter-fournisseur" style="font-family:var(--sans);font-size:12px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer">
+      <option value="">Tous les fournisseurs</option>
+    </select>
     <div class="toolbar-sep"></div>
     <span style="font-size:11px;color:var(--faint)">Cliquez sur un en-tête pour trier</span>
   </div>
@@ -325,6 +366,11 @@
     </div>
     <div class="guide-faq" id="faq"></div>
     <div class="guide-tip"><strong>Notre lecture du marché (mars 2026)</strong> — Les tarifs ont baissé deux fois consécutives. Dans ce contexte, une offre fixe à −13 à −17% sous le TRV (Alpiq, Ekwateur) offre le meilleur rapport sécurité/économies. L'option HC/HP n'est rentable qu'à partir de 25–30% de conso en heures creuses.</div>
+
+    <div class="trv-graph">
+      <div class="trv-graph-title">Évolution du tarif réglementé EDF (kWh base, 6 kVA, TTC)</div>
+      <canvas id="trv-chart" height="220"></canvas>
+    </div>
   </section>
 </main>
 
@@ -334,11 +380,16 @@
 <script>
 let data = null;
 let conso = 5700, hcPct = 0.30, kva = 6;
-let filter = 'all';
+let filter = 'all', filterFournisseur = '', currentFournisseur = '';
 let sortCol = 'cost', sortDir = 1;
 
 function savePrefs() {
-  try { localStorage.setItem('elec_conso', conso); localStorage.setItem('elec_kva', kva); localStorage.setItem('elec_hc', Math.round(hcPct * 100)); } catch(e) {}
+  try {
+    localStorage.setItem('elec_conso', conso);
+    localStorage.setItem('elec_kva', kva);
+    localStorage.setItem('elec_hc', Math.round(hcPct * 100));
+    localStorage.setItem('elec_current', currentFournisseur);
+  } catch(e) {}
 }
 function loadPrefs() {
   try {
@@ -362,7 +413,25 @@ async function load() {
     document.getElementById('sel-kva').value = kva;
     document.getElementById('inp-hc').value = Math.round(hcPct * 100);
     document.getElementById('sl-hc').value = Math.round(hcPct * 100);
+    // Alert if data is stale (>15 days)
+    const age = (Date.now() - new Date(data.meta.updated_at)) / 86400000;
+    if (age > 15) document.getElementById('alert-banner').classList.add('show');
+
+    // Populate fournisseur selects
+    const fournisseurs = [...new Set(data.offres.map(o => o.fournisseur))].sort();
+    const selCurrent = document.getElementById('sel-current');
+    const selFilt    = document.getElementById('filter-fournisseur');
+    fournisseurs.forEach(f => {
+      selCurrent.innerHTML += `<option value="${f}">${f}</option>`;
+      selFilt.innerHTML    += `<option value="${f}">${f}</option>`;
+    });
+
+    // Restore saved current fournisseur
+    const savedCurrent = localStorage.getItem('elec_current') || '';
+    if (savedCurrent) { currentFournisseur = savedCurrent; selCurrent.value = savedCurrent; }
+
     render();
+    drawChart();
   } catch(e) {
     document.getElementById('tbody').innerHTML = '<tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
   }
@@ -408,11 +477,23 @@ function render() {
   const costs = nonTrvBase.map(offreCost).filter(c => c !== null);
   const bestCost = Math.min(...costs);
 
+  // Current fournisseur cost (cheapest base offer from that provider)
+  let currentCard = '';
+  if (currentFournisseur) {
+    const currentOffers = data.offres.filter(o => o.fournisseur === currentFournisseur && o.mode === 'base' && !o.hc_indisponible && o.actif !== false);
+    if (currentOffers.length) {
+      const currentCost = Math.min(...currentOffers.map(offreCost).filter(c => c !== null));
+      const saving = currentCost - bestCost;
+      currentCard = `<div class="scard" style="border-color:#F59E0B;background:#FFFBEB"><div class="scard-label">Vs votre fournisseur</div><div class="scard-val" style="color:#92400E">${Math.round(currentCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie possible : <strong>−${Math.round(saving)} €/an</strong></div></div>`;
+    }
+  }
+
   document.getElementById('summary-cards').innerHTML = `
     <div class="scard"><div class="scard-label">Tarif réglementé EDF</div><div class="scard-val">${Math.round(trv).toLocaleString('fr-FR')} €</div><div class="scard-sub">coût annuel estimé</div></div>
     <div class="scard"><div class="scard-label">Meilleure offre base</div><div class="scard-val">${Math.round(bestCost).toLocaleString('fr-FR')} €</div><div class="scard-sub">économie : −${Math.round(trv - bestCost)} €/an</div></div>
     <div class="scard"><div class="scard-label">Consommation</div><div class="scard-val">${conso.toLocaleString('fr-FR')}</div><div class="scard-sub">kWh par an</div></div>
     <div class="scard"><div class="scard-label">Compteur / HC</div><div class="scard-val">${kva} kVA · ${Math.round(hcPct*100)}%</div><div class="scard-sub">${hcPct >= 0.25 ? 'mode HC/HP activé' : 'mode base recommandé'}</div></div>
+    ${currentCard}
   `;
 
   let offres = data.offres.filter(o => {
@@ -422,7 +503,7 @@ function render() {
     if (filter === 'vert')   return o.vert;
     if (filter === 'libre')  return o.sans_engagement === true;
     return true;
-  });
+  }).filter(o => !filterFournisseur || o.fournisseur === filterFournisseur);
 
   const allRows = offres.map(o => {
     const cost = offreCost(o);
@@ -464,11 +545,13 @@ function render() {
     const modePill = isNA ? '<span class="mode-pill pill-na">HC/HP non dispo</span>' : o.mode === 'base' ? '<span class="mode-pill pill-base">Base</span>' : '<span class="mode-pill pill-hc">HC / HP</span>';
     const souscBtn = o.url ? `<a href="${o.url}" target="_blank" rel="noopener" class="souscrire-btn">Voir <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" style="width:10px;height:10px;flex-shrink:0"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg></a>` : '<span class="na">—</span>';
 
-    const cls = [isTRV ? 'row-trv' : '', o.mode === 'hc' && !isNA ? 'row-hc-avail' : '', isNA ? 'row-hc-na' : '', isBest ? 'row-best' : ''].filter(Boolean).join(' ');
+    const isCurrent = !isTRV && currentFournisseur && o.fournisseur === currentFournisseur;
+    const cls = [isTRV ? 'row-trv' : '', o.mode === 'hc' && !isNA ? 'row-hc-avail' : '', isNA ? 'row-hc-na' : '', isBest ? 'row-best' : '', isCurrent ? 'current-row' : ''].filter(Boolean).join(' ');
     const da = `data-id="${o.id}" data-nom="${o.fournisseur}" data-offre="${o.offre}" data-mode="${o.mode}" data-cost="${cost !== null ? Math.round(cost) : ''}" data-sav="${saving !== null ? Math.round(saving) : ''}" data-kwh="${kwh.toFixed(4)}" data-hc="${o.kwh_hc != null ? o.kwh_hc.toFixed(4) : ''}" data-hp="${o.kwh_hp != null ? o.kwh_hp.toFixed(4) : ''}" data-abo="${abo.toFixed(2)}" data-vert="${o.vert ? (o.label_vert || 'oui') : (o.vert_option ? 'option' : 'non')}" data-type="${o.type}" data-eng="${o.sans_engagement ? 'Sans engagement' : 'Avec engagement'}" data-valid="${o.validite ? fmtValidite(o.validite) : ''}" data-url="${o.url || ''}" data-na="${isNA ? '1' : '0'}"`;
 
+    const currentTag = isCurrent ? '<span class="current-tag">Actuel</span>' : '';
     rows += `<tr class="${cls}" ${da}>
-      <td><div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}</div><div class="offer-name">${o.offre}</div>${modePill}${validTag}</td>
+      <td><div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}${currentTag}</div><div class="offer-name">${o.offre}</div>${modePill}${validTag}</td>
       <td style="text-align:center" class="col-desktop">${typeHtml}</td>
       <td>${costHtml}</td>
       <td>${savHtml}</td>
@@ -490,12 +573,29 @@ document.getElementById('sel-kva').addEventListener('change', e => { kva = parse
 
 const slHC = document.getElementById('sl-hc');
 const inpHC = document.getElementById('inp-hc');
-function setHC(val) { val = Math.max(0, Math.min(80, Math.round(val))); hcPct = val / 100; slHC.value = val; inpHC.value = val; savePrefs(); render(); }
+function setHC(val) {
+  val = Math.max(0, Math.min(80, Math.round(val)));
+  hcPct = val / 100;
+  slHC.value = val; inpHC.value = val;
+  const link = document.getElementById('hc-link');
+  if (link) { link.classList.toggle('show', hcPct >= 0.25); }
+  savePrefs(); render();
+}
 slHC.addEventListener('input', e => setHC(parseInt(e.target.value)));
 inpHC.addEventListener('input', e => { const v = parseInt(e.target.value); if (!isNaN(v)) setHC(v); });
 inpHC.addEventListener('blur',  e => { const v = parseInt(e.target.value); setHC(isNaN(v) ? 0 : v); });
 
 document.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.fbtn').forEach(x => x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.f; render(); }));
+document.getElementById('sel-current').addEventListener('change', e => {
+  currentFournisseur = e.target.value;
+  savePrefs(); render();
+});
+
+document.getElementById('filter-fournisseur').addEventListener('change', e => {
+  filterFournisseur = e.target.value;
+  render();
+});
+
 document.querySelectorAll('thead th.sortable').forEach(th => {
   th.addEventListener('click', () => {
     const col = th.dataset.col;
@@ -517,6 +617,100 @@ const faqs = [
 ];
 document.getElementById('faq').innerHTML = faqs.map((f,i) => `<div class="faq-item" id="faq-${i}"><button class="faq-q" onclick="toggleFaq(${i})"><span>${f.q}</span><span class="faq-arrow">▼</span></button><div class="faq-a"><div class="faq-a-inner">${f.a}</div></div></div>`).join('');
 function toggleFaq(i) { document.getElementById('faq-'+i).classList.toggle('open'); }
+
+function drawChart() {
+  const ctx = document.getElementById('trv-chart');
+  if (!ctx) return;
+
+  // Historical TRV kWh base data (6 kVA, TTC, option base)
+  const labels = ['Août 2022','Fév. 2023','Août 2023','Fév. 2024','Août 2024','Fév. 2025','Août 2025','Fév. 2026'];
+  const trvData = [0.1740, 0.2062, 0.2276, 0.2516, 0.2516, 0.1952, 0.1952, 0.1940];
+
+  // Best market offer per period (approximate)
+  const bestData = [null, null, null, 0.2100, 0.1900, 0.1750, 0.1720, 0.1673];
+
+  const style = getComputedStyle(document.documentElement);
+  const colorText   = '#7A7268';
+  const colorGrid   = '#E2DDD4';
+  const colorTRV    = '#185FA5';
+  const colorBest   = '#0F766E';
+
+  // Simple canvas chart
+  const W = ctx.parentElement.clientWidth - 48;
+  const H = 220;
+  ctx.width  = W;
+  ctx.height = H;
+  const c = ctx.getContext('2d');
+  const pad = { top: 20, right: 20, bottom: 40, left: 52 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top  - pad.bottom;
+
+  const allVals = [...trvData, ...bestData.filter(Boolean)];
+  const minV = Math.min(...allVals) * 0.97;
+  const maxV = Math.max(...allVals) * 1.02;
+
+  function xPos(i) { return pad.left + (i / (labels.length - 1)) * cw; }
+  function yPos(v) { return pad.top + (1 - (v - minV) / (maxV - minV)) * ch; }
+
+  c.clearRect(0, 0, W, H);
+
+  // Grid lines
+  c.strokeStyle = colorGrid; c.lineWidth = 0.5;
+  [0.15, 0.17, 0.19, 0.21, 0.23, 0.25].forEach(v => {
+    if (v < minV || v > maxV) return;
+    const y = yPos(v);
+    c.beginPath(); c.moveTo(pad.left, y); c.lineTo(pad.left + cw, y); c.stroke();
+    c.fillStyle = colorText; c.font = '10px DM Mono, monospace'; c.textAlign = 'right';
+    c.fillText((v * 100).toFixed(0) + 'cts', pad.left - 6, y + 3);
+  });
+
+  // X labels
+  c.fillStyle = colorText; c.font = '9px DM Sans, sans-serif'; c.textAlign = 'center';
+  labels.forEach((l, i) => { c.fillText(l, xPos(i), H - 8); });
+
+  // TRV line
+  c.strokeStyle = colorTRV; c.lineWidth = 2.5; c.lineJoin = 'round';
+  c.beginPath();
+  trvData.forEach((v, i) => { i === 0 ? c.moveTo(xPos(i), yPos(v)) : c.lineTo(xPos(i), yPos(v)); });
+  c.stroke();
+
+  // TRV dots
+  trvData.forEach((v, i) => {
+    c.fillStyle = colorTRV;
+    c.beginPath(); c.arc(xPos(i), yPos(v), 3.5, 0, Math.PI * 2); c.fill();
+  });
+
+  // Best market line
+  c.strokeStyle = colorBest; c.lineWidth = 2; c.setLineDash([5, 3]);
+  let started = false;
+  c.beginPath();
+  bestData.forEach((v, i) => {
+    if (v === null) return;
+    if (!started) { c.moveTo(xPos(i), yPos(v)); started = true; }
+    else c.lineTo(xPos(i), yPos(v));
+  });
+  c.stroke(); c.setLineDash([]);
+
+  // Best market dots
+  bestData.forEach((v, i) => {
+    if (v === null) return;
+    c.fillStyle = colorBest;
+    c.beginPath(); c.arc(xPos(i), yPos(v), 3, 0, Math.PI * 2); c.fill();
+  });
+
+  // Legend
+  const lx = pad.left;
+  const ly = pad.top - 4;
+  c.fillStyle = colorTRV; c.fillRect(lx, ly - 6, 14, 3);
+  c.fillStyle = colorText; c.font = '10px DM Sans, sans-serif'; c.textAlign = 'left';
+  c.fillText('Tarif réglementé (TRV)', lx + 18, ly);
+
+  c.strokeStyle = colorBest; c.lineWidth = 2; c.setLineDash([4,2]);
+  c.beginPath(); c.moveTo(lx + 140, ly - 4); c.lineTo(lx + 154, ly - 4); c.stroke();
+  c.setLineDash([]);
+  c.fillStyle = colorText;
+  c.fillText('Meilleure offre du marché', lx + 158, ly);
+}
 
 load();
 </script>
