@@ -83,9 +83,9 @@
     .fbtn:hover{border-color:var(--border2);color:var(--text)}
     .fbtn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
-    .tscroll{border-radius:var(--r);border:1px solid var(--border);overflow-x:auto;max-height:75vh;overflow-y:auto}
+    .tscroll{border-radius:var(--r);border:1px solid var(--border);overflow-x:auto}
     table{width:100%;border-collapse:collapse;background:var(--surface);min-width:920px}
-    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;position:sticky;top:0;z-index:10;box-shadow:0 1px 0 var(--border)
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
     thead th:first-child{text-align:left;min-width:190px}
     thead th.th-c{text-align:center}
     thead th.sortable{cursor:pointer;user-select:none;transition:color .1s}
@@ -177,7 +177,6 @@
     /* ── Mobile table ── */
     @media(max-width:720px){
       .col-desktop{display:none}
-      .tscroll{border-radius:var(--r)}
       table{min-width:0;width:100%}
       thead th:first-child{min-width:120px}
       td,thead th{padding:7px 8px;font-size:11px;letter-spacing:-.01em}
@@ -211,12 +210,11 @@
     .detail-btn{background:none;border:1px solid var(--border);border-radius:var(--rs);padding:3px 8px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--sans)}
     .detail-btn:hover{background:var(--surface2)}
   </style>
-</head>
-<body>
+</head><body>
 <header>
   <div class="logo">
     <div class="logo-icon" style="background:none;overflow:visible"><img src="icon-192.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
-    <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers</div></div>
+    <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
   </div>
   <div id="badge-date">Chargement…</div>
 </header>
@@ -333,23 +331,15 @@
 <footer style="text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border);margin-top:0">
   Créé par Fabien 🐅 · Données mises à jour chaque semaine · <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener" style="color:var(--faint);text-decoration:underline">Code source</a>
 </footer>
-
 <script>
-// ── State ──────────────────────────────────────────────────────────────
 let data = null;
 let conso = 5700, hcPct = 0.30, kva = 6;
 let filter = 'all';
 let sortCol = 'cost', sortDir = 1;
 
-// ── Persist to localStorage ────────────────────────────────────────────
 function savePrefs() {
-  try {
-    localStorage.setItem('elec_conso', conso);
-    localStorage.setItem('elec_kva', kva);
-    localStorage.setItem('elec_hc', Math.round(hcPct * 100));
-  } catch(e) {}
+  try { localStorage.setItem('elec_conso', conso); localStorage.setItem('elec_kva', kva); localStorage.setItem('elec_hc', Math.round(hcPct * 100)); } catch(e) {}
 }
-
 function loadPrefs() {
   try {
     const c = parseInt(localStorage.getItem('elec_conso'));
@@ -361,30 +351,23 @@ function loadPrefs() {
   } catch(e) {}
 }
 
-// ── Load ───────────────────────────────────────────────────────────────
 async function load() {
   try {
     const r = await fetch('./tarifs.json?t=' + Date.now());
     data = await r.json();
     const d = new Date(data.meta.updated_at);
-    document.getElementById('badge-date').textContent =
-      '● ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-
-    // Apply saved prefs to inputs
+    document.getElementById('badge-date').textContent = '● ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
     loadPrefs();
     document.getElementById('inp-conso').value = conso;
     document.getElementById('sel-kva').value = kva;
     document.getElementById('inp-hc').value = Math.round(hcPct * 100);
     document.getElementById('sl-hc').value = Math.round(hcPct * 100);
-
     render();
   } catch(e) {
-    document.getElementById('tbody').innerHTML =
-      '<tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
+    document.getElementById('tbody').innerHTML = '<tr><td colspan="10" style="padding:3rem;text-align:center;color:var(--muted)">Impossible de charger tarifs.json — ' + e.message + '</td></tr>';
   }
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────
 function aboForKva(baseAbo) {
   if (!data.kva_abo_annuel) return baseAbo;
   const target = data.kva_abo_annuel[String(kva)];
@@ -392,12 +375,10 @@ function aboForKva(baseAbo) {
   if (!target) return baseAbo;
   return baseAbo * (target / base6);
 }
-
 function kwhBaseForKva(o) {
   if (kva >= 9 && o.kwh_base_9kva_plus != null) return o.kwh_base_9kva_plus;
   return o.kwh_base;
 }
-
 function offreCost(o) {
   if (o.hc_indisponible) return null;
   const abo = aboForKva(o.abo_annuel);
@@ -407,7 +388,6 @@ function offreCost(o) {
   }
   return kwh * conso + abo;
 }
-
 function trvCost() {
   const t = data.trv;
   const abo = aboForKva(t.abo_annuel);
@@ -415,23 +395,15 @@ function trvCost() {
   if (hcPct >= 0.25) return (t.kwh_hc * hcPct + t.kwh_hp * (1 - hcPct)) * conso + abo;
   return kwh * conso + abo;
 }
-
 function fmtValidite(v) {
   if (!v) return '';
-  const d = new Date(v);
-  return 'jusqu\'au ' + d.toLocaleDateString('fr-FR',{month:'short',year:'numeric'});
+  return 'jusqu\'au ' + new Date(v).toLocaleDateString('fr-FR',{month:'short',year:'numeric'});
 }
+function isExpired(v) { return v ? new Date(v) < new Date() : false; }
 
-function isExpired(v) {
-  if (!v) return false;
-  return new Date(v) < new Date();
-}
-
-// ── Render ──────────────────────────────────────────────────────────────
 function render() {
   if (!data) return;
   const trv = trvCost();
-
   const nonTrvBase = data.offres.filter(o => o.mode === 'base' && !o.is_trv && !o.hc_indisponible && o.actif !== false);
   const costs = nonTrvBase.map(offreCost).filter(c => c !== null);
   const bestCost = Math.min(...costs);
@@ -454,23 +426,15 @@ function render() {
 
   const allRows = offres.map(o => {
     const cost = offreCost(o);
-    return {
-      o,
-      sortCost: cost ?? Infinity,
-      sortKwh:  kwhBaseForKva(o),
-      sortAbo:  aboForKva(o.abo_annuel),
-      sortSav:  cost !== null ? trv - cost : -Infinity
-    };
+    return { o, sortCost: cost ?? Infinity, sortKwh: kwhBaseForKva(o), sortAbo: aboForKva(o.abo_annuel), sortSav: cost !== null ? trv - cost : -Infinity };
   });
 
   allRows.sort((a, b) => {
-    let va, vb;
-    if (sortCol === 'cost')     { va = a.sortCost; vb = b.sortCost; }
-    else if (sortCol === 'kwh_base') { va = a.sortKwh; vb = b.sortKwh; }
-    else if (sortCol === 'abo') { va = a.sortAbo; vb = b.sortAbo; }
-    else if (sortCol === 'sav') { return (b.sortSav - a.sortSav) * sortDir; }
-    else { va = 0; vb = 0; }
-    return (va - vb) * sortDir;
+    if (sortCol === 'cost')     return (a.sortCost - b.sortCost) * sortDir;
+    if (sortCol === 'kwh_base') return (a.sortKwh - b.sortKwh) * sortDir;
+    if (sortCol === 'abo')      return (a.sortAbo - b.sortAbo) * sortDir;
+    if (sortCol === 'sav')      return (b.sortSav - a.sortSav) * sortDir;
+    return 0;
   });
 
   const bestNonTrv = allRows.filter(r => !r.o.is_trv && !r.o.hc_indisponible).map(r => r.sortCost).filter(isFinite);
@@ -484,76 +448,27 @@ function render() {
     const isNA   = !!o.hc_indisponible;
     const isBest = !isTRV && !isNA && cost !== null && Math.abs(cost - globalBest) < 0.5;
     const expired = isExpired(o.validite);
-
-    const engTag = !o.sans_engagement ? '<span class="tag-eng">Engagement</span>' : '';
-    const validTag = o.validite && !expired
-      ? `<div class="tag-valid">${fmtValidite(o.validite)}</div>` : '';
-    const expTag = expired ? '<span class="tag-exp">Expirée ?</span>' : '';
-
     const kwh = kwhBaseForKva(o);
     const abo = aboForKva(o.abo_annuel);
 
-    const savHtml = isTRV ? '<span class="sav-ref">référence</span>'
-      : isNA ? '<span class="na">—</span>'
-      : saving >= 0 ? `<span class="saving sav-pos">−${Math.round(saving)} €</span>`
-      : `<span class="saving sav-neg">+${Math.round(Math.abs(saving))} €</span>`;
+    const engTag  = !o.sans_engagement ? '<span class="tag-eng">Engagement</span>' : '';
+    const expTag  = expired ? '<span class="tag-exp">Expirée ?</span>' : '';
+    const validTag = o.validite && !expired ? `<div class="tag-valid">${fmtValidite(o.validite)}</div>` : '';
 
-    const costHtml = isNA ? '<span class="na">n/a</span>'
-      : `<span class="num-big">${Math.round(cost).toLocaleString('fr-FR')} €</span>`;
+    const savHtml  = isTRV ? '<span class="sav-ref">référence</span>' : isNA ? '<span class="na">—</span>' : saving >= 0 ? `<span class="saving sav-pos">−${Math.round(saving)} €</span>` : `<span class="saving sav-neg">+${Math.round(Math.abs(saving))} €</span>`;
+    const costHtml = isNA ? '<span class="na">n/a</span>' : `<span class="num-big">${Math.round(cost).toLocaleString('fr-FR')} €</span>`;
+    const hcCell   = isNA || o.kwh_hc == null ? '<span class="na">—</span>' : `<span class="num">${o.kwh_hc.toFixed(4)} €</span>`;
+    const hpCell   = isNA || o.kwh_hp == null ? '<span class="na">—</span>' : `<span class="num">${o.kwh_hp.toFixed(4)} €</span>`;
+    const vertHtml = o.vert ? `<span class="badge bg-green">✓ verte</span>` : o.vert_option ? `<span class="badge bg-gray">option</span>` : `<span class="badge bg-gray">non</span>`;
+    const typeHtml = o.type === 'fixe' ? `<span class="type-fixe">Fixe</span>` : `<span class="type-indexe">Indexé</span>`;
+    const modePill = isNA ? '<span class="mode-pill pill-na">HC/HP non dispo</span>' : o.mode === 'base' ? '<span class="mode-pill pill-base">Base</span>' : '<span class="mode-pill pill-hc">HC / HP</span>';
+    const souscBtn = o.url ? `<a href="${o.url}" target="_blank" rel="noopener" class="souscrire-btn">Voir <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" style="width:10px;height:10px;flex-shrink:0"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg></a>` : '<span class="na">—</span>';
 
-    const hcCell = isNA || o.kwh_hc == null ? '<span class="na">—</span>'
-      : `<span class="num">${o.kwh_hc.toFixed(4)} €</span>`;
-    const hpCell = isNA || o.kwh_hp == null ? '<span class="na">—</span>'
-      : `<span class="num">${o.kwh_hp.toFixed(4)} €</span>`;
+    const cls = [isTRV ? 'row-trv' : '', o.mode === 'hc' && !isNA ? 'row-hc-avail' : '', isNA ? 'row-hc-na' : '', isBest ? 'row-best' : ''].filter(Boolean).join(' ');
+    const da = `data-id="${o.id}" data-nom="${o.fournisseur}" data-offre="${o.offre}" data-mode="${o.mode}" data-cost="${cost !== null ? Math.round(cost) : ''}" data-sav="${saving !== null ? Math.round(saving) : ''}" data-kwh="${kwh.toFixed(4)}" data-hc="${o.kwh_hc != null ? o.kwh_hc.toFixed(4) : ''}" data-hp="${o.kwh_hp != null ? o.kwh_hp.toFixed(4) : ''}" data-abo="${abo.toFixed(2)}" data-vert="${o.vert ? (o.label_vert || 'oui') : (o.vert_option ? 'option' : 'non')}" data-type="${o.type}" data-eng="${o.sans_engagement ? 'Sans engagement' : 'Avec engagement'}" data-valid="${o.validite ? fmtValidite(o.validite) : ''}" data-url="${o.url || ''}" data-na="${isNA ? '1' : '0'}"`;
 
-    const vertHtml = o.vert ? `<span class="badge bg-green">✓ verte</span>`
-      : o.vert_option ? `<span class="badge bg-gray">option</span>`
-      : `<span class="badge bg-gray">non</span>`;
-
-    const typeHtml = o.type === 'fixe' ? `<span class="type-fixe">Fixe</span>`
-      : `<span class="type-indexe">Indexé</span>`;
-
-    const modePill = isNA ? '<span class="mode-pill pill-na">HC/HP non dispo</span>'
-      : o.mode === 'base' ? '<span class="mode-pill pill-base">Base</span>'
-      : '<span class="mode-pill pill-hc">HC / HP</span>';
-
-    const souscBtn = o.url
-      ? `<a href="${o.url}" target="_blank" rel="noopener" class="souscrire-btn">Voir <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" style="width:10px;height:10px;flex-shrink:0"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg></a>`
-      : '<span class="na">—</span>';
-
-    const cls = [
-      isTRV ? 'row-trv' : '',
-      o.mode === 'hc' && !isNA ? 'row-hc-avail' : '',
-      isNA ? 'row-hc-na' : '',
-      isBest ? 'row-best' : ''
-    ].filter(Boolean).join(' ');
-
-    // Build data attrs for bottom sheet
-    const dataAttrs = [
-      `data-id="${o.id}"`,
-      `data-nom="${o.fournisseur}"`,
-      `data-offre="${o.offre}"`,
-      `data-mode="${o.mode}"`,
-      `data-cost="${cost !== null ? Math.round(cost) : ''}"`,
-      `data-sav="${saving !== null ? Math.round(saving) : ''}"`,
-      `data-kwh="${kwh.toFixed(4)}"`,
-      `data-hc="${o.kwh_hc != null ? o.kwh_hc.toFixed(4) : ''}"`,
-      `data-hp="${o.kwh_hp != null ? o.kwh_hp.toFixed(4) : ''}"`,
-      `data-abo="${abo.toFixed(2)}"`,
-      `data-vert="${o.vert ? (o.label_vert || 'oui') : (o.vert_option ? 'option' : 'non')}"`,
-      `data-type="${o.type}"`,
-      `data-eng="${o.sans_engagement ? 'Sans engagement' : 'Avec engagement'}"`,
-      `data-valid="${o.validite ? fmtValidite(o.validite) : ''}"`,
-      `data-url="${o.url || ''}"`,
-      `data-na="${isNA ? '1' : '0'}"`
-    ].join(' ');
-
-    rows += `<tr class="${cls}" ${dataAttrs}>
-      <td>
-        <div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}</div>
-        <div class="offer-name">${o.offre}</div>
-        ${modePill}${validTag}
-      </td>
+    rows += `<tr class="${cls}" ${da}>
+      <td><div class="prov-name">${o.fournisseur}${isBest ? '<span class="best-tag">Meilleur prix</span>' : ''}${engTag}${expTag}</div><div class="offer-name">${o.offre}</div>${modePill}${validTag}</td>
       <td style="text-align:center" class="col-desktop">${typeHtml}</td>
       <td>${costHtml}</td>
       <td>${savHtml}</td>
@@ -567,76 +482,45 @@ function render() {
     </tr>`;
   });
 
-  document.getElementById('tbody').innerHTML = rows ||
-    '<tr><td colspan="10" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
+  document.getElementById('tbody').innerHTML = rows || '<tr><td colspan="10" style="padding:2rem;text-align:center;color:var(--muted)">Aucune offre ne correspond.</td></tr>';
 }
 
-// ── Events ──────────────────────────────────────────────────────────────
-document.getElementById('inp-conso').addEventListener('input', e => {
-  const v = parseInt(e.target.value);
-  if (v >= 100 && v <= 50000) { conso = v; savePrefs(); render(); }
-});
+document.getElementById('inp-conso').addEventListener('input', e => { const v = parseInt(e.target.value); if (v >= 100 && v <= 50000) { conso = v; savePrefs(); render(); } });
+document.getElementById('sel-kva').addEventListener('change', e => { kva = parseInt(e.target.value); savePrefs(); render(); });
 
-document.getElementById('sel-kva').addEventListener('change', e => {
-  kva = parseInt(e.target.value);
-  savePrefs(); render();
-});
-
-const slHC  = document.getElementById('sl-hc');
+const slHC = document.getElementById('sl-hc');
 const inpHC = document.getElementById('inp-hc');
-
-function setHC(val) {
-  val = Math.max(0, Math.min(80, Math.round(val)));
-  hcPct = val / 100;
-  slHC.value = val;
-  inpHC.value = val;
-  savePrefs(); render();
-}
+function setHC(val) { val = Math.max(0, Math.min(80, Math.round(val))); hcPct = val / 100; slHC.value = val; inpHC.value = val; savePrefs(); render(); }
 slHC.addEventListener('input', e => setHC(parseInt(e.target.value)));
 inpHC.addEventListener('input', e => { const v = parseInt(e.target.value); if (!isNaN(v)) setHC(v); });
 inpHC.addEventListener('blur',  e => { const v = parseInt(e.target.value); setHC(isNaN(v) ? 0 : v); });
 
-document.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.fbtn').forEach(x => x.classList.remove('active'));
-  b.classList.add('active');
-  filter = b.dataset.f; render();
-}));
-
+document.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.fbtn').forEach(x => x.classList.remove('active')); b.classList.add('active'); filter = b.dataset.f; render(); }));
 document.querySelectorAll('thead th.sortable').forEach(th => {
   th.addEventListener('click', () => {
     const col = th.dataset.col;
     if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
-    document.querySelectorAll('thead th.sortable').forEach(t => {
-      t.classList.remove('sorted');
-      const a = t.querySelector('.sort-arrow'); if (a) a.textContent = '';
-    });
+    document.querySelectorAll('thead th.sortable').forEach(t => { t.classList.remove('sorted'); const a = t.querySelector('.sort-arrow'); if (a) a.textContent = ''; });
     th.classList.add('sorted');
     const a = th.querySelector('.sort-arrow'); if (a) a.textContent = sortDir === 1 ? '↑' : '↓';
     render();
   });
 });
 
-// ── FAQ ─────────────────────────────────────────────────────────────────
 const faqs = [
   { q:"Quelle est la différence entre le kWh base et le kWh HC/HP ?", a:"En option Base, vous payez le même prix du kWh quelle que soit l'heure. En option Heures Creuses/Heures Pleines, vous bénéficiez d'un tarif réduit pendant 8 heures par jour (généralement la nuit), mais payez plus cher le reste du temps. L'option HC/HP est rentable uniquement si vous consommez au moins 25 à 30% de votre électricité pendant ces 8 heures creuses — typiquement grâce à un chauffe-eau, un lave-linge ou une voiture électrique programmables." },
   { q:"Peut-on changer de fournisseur librement ?", a:"Oui, totalement. Le changement de fournisseur est gratuit, sans coupure d'électricité, et le nouveau fournisseur se charge de résilier l'ancien contrat. Certaines offres à prix fixe indiquent une durée de garantie des prix (1, 2 ou 3 ans), mais vous pouvez partir à tout moment sans frais — c'est le fournisseur qui s'engage à maintenir le prix, pas vous qui êtes bloqué." },
-  { q:"L'électricité « verte » est-elle vraiment renouvelable ?", a:"Il existe deux niveaux. Les offres avec Garanties d'Origine (GO) certifient qu'un équivalent de votre consommation a été injecté dans le réseau par un producteur renouvelable, mais ce n'est pas forcément l'électricité que vous consommez physiquement. Les offres labellisées VertVolt Engagé (Octopus, La Bellenergie) vont plus loin : elles achètent l'électricité directement auprès de producteurs français identifiés, ce qui soutient réellement le développement des EnR en France." },
+  { q:"L'électricité « verte » est-elle vraiment renouvelable ?", a:"Il existe deux niveaux. Les offres avec Garanties d'Origine (GO) certifient qu'un équivalent de votre consommation a été injecté dans le réseau par un producteur renouvelable, mais ce n'est pas forcément l'électricité que vous consommez physiquement. Les offres labellisées VertVolt Engagé (Octopus, La Bellenergie) vont plus loin : elles achètent l'électricité directement auprès de producteurs français identifiés." },
   { q:"Pourquoi le coût annuel change-t-il selon le % d'heures creuses ?", a:"Quand vous entrez un pourcentage d'heures creuses, le comparateur recalcule en temps réel le coût de la ligne HC/HP selon la formule : (kWh HC × % HC + kWh HP × % HP) × consommation + abonnement. Par exemple avec 40% en HC : si le kWh HC est 0,14 € et le kWh HP est 0,19 €, le kWh moyen pondéré est 0,17 € — souvent plus avantageux qu'un tarif base à 0,167 €." },
-  { q:"À quoi sert la puissance du compteur (kVA) ?", a:"La puissance détermine la quantité maximale d'appareils utilisables simultanément et influe directement sur le montant de l'abonnement. Les abonnements affichés dans ce comparateur sont calculés depuis la grille officielle CRE (fév. 2026) : 3 kVA = 144 €/an, 6 kVA = 188 €/an, 9 kVA = 235 €/an, 12 kVA = 280 €/an, 15 kVA = 322 €/an. Tous les fournisseurs alternatifs suivent la même structure TURPE (tarif d'acheminement réseau)." },
-  { q:"Que signifie « Engagement » dans le tableau ?", a:"Certaines offres (Engie 3 ans, Plenitude) nécessitent de rester client pendant toute la durée annoncée sous peine de pénalités. D'autres offrent un prix fixe garanti, mais sans obligation de rester — vous pouvez partir librement. Lisez toujours les conditions générales avant de souscrire." }
+  { q:"À quoi sert la puissance du compteur (kVA) ?", a:"La puissance détermine la quantité maximale d'appareils utilisables simultanément et influe directement sur le montant de l'abonnement. Les abonnements affichés sont calculés depuis la grille officielle CRE (fév. 2026) : 3 kVA = 144 €/an, 6 kVA = 188 €/an, 9 kVA = 235 €/an, 12 kVA = 280 €/an, 15 kVA = 322 €/an." },
+  { q:"Que signifie « Engagement » dans le tableau ?", a:"Certaines offres (Engie 3 ans, Plenitude) nécessitent de rester client pendant toute la durée annoncée. D'autres offrent un prix fixe garanti, mais sans obligation de rester — vous pouvez partir librement. Lisez toujours les conditions générales avant de souscrire." }
 ];
-
-document.getElementById('faq').innerHTML = faqs.map((f,i) => `
-  <div class="faq-item" id="faq-${i}">
-    <button class="faq-q" onclick="toggleFaq(${i})"><span>${f.q}</span><span class="faq-arrow">▼</span></button>
-    <div class="faq-a"><div class="faq-a-inner">${f.a}</div></div>
-  </div>`).join('');
-
+document.getElementById('faq').innerHTML = faqs.map((f,i) => `<div class="faq-item" id="faq-${i}"><button class="faq-q" onclick="toggleFaq(${i})"><span>${f.q}</span><span class="faq-arrow">▼</span></button><div class="faq-a"><div class="faq-a-inner">${f.a}</div></div></div>`).join('');
 function toggleFaq(i) { document.getElementById('faq-'+i).classList.toggle('open'); }
 
 load();
 </script>
-<!-- Bottom sheet -->
+
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet(event)">
   <div class="sheet" id="sheet">
     <div class="sheet-handle"></div>
@@ -652,46 +536,29 @@ load();
 function openSheet(tr) {
   const d = tr.dataset;
   if (d.na === '1') return;
-
   document.getElementById('sh-provider').textContent = d.nom;
-  document.getElementById('sh-offer').innerHTML =
-    d.offre + ' &nbsp;' +
-    (d.mode === 'hc' ? '<span class="mode-pill pill-hc">HC / HP</span>' : '<span class="mode-pill pill-base">Base</span>');
-
+  document.getElementById('sh-offer').innerHTML = d.offre + ' &nbsp;' + (d.mode === 'hc' ? '<span class="mode-pill pill-hc">HC / HP</span>' : '<span class="mode-pill pill-base">Base</span>');
   const cells = [
-    { label: 'Coût annuel estimé', val: d.cost ? d.cost + ' €' : '—', sub: '' },
-    { label: 'vs Tarif réglementé', val: d.sav ? (d.sav > 0 ? '−' : '+') + Math.abs(d.sav) + ' €/an' : '—', sub: '' },
-    { label: 'kWh base', val: d.kwh + ' €', sub: '' },
-    { label: 'Abonnement /an', val: d.abo + ' €', sub: '' },
-    { label: 'kWh HC', val: d.hc || '—', sub: '' },
-    { label: 'kWh HP', val: d.hp || '—', sub: '' },
-    { label: 'Électricité verte', val: d.vert, sub: '' },
-    { label: 'Contrat', val: d.type === 'fixe' ? 'Prix fixe' : 'Indexé', sub: d.valid || '' },
-    { label: 'Engagement', val: d.eng, sub: '' },
+    { label:'Coût annuel estimé', val: d.cost ? d.cost + ' €' : '—' },
+    { label:'vs Tarif réglementé', val: d.sav ? (parseInt(d.sav) > 0 ? '−' : '+') + Math.abs(parseInt(d.sav)) + ' €/an' : '—' },
+    { label:'kWh base', val: d.kwh + ' €' },
+    { label:'Abonnement /an', val: d.abo + ' €' },
+    { label:'kWh HC', val: d.hc || '—' },
+    { label:'kWh HP', val: d.hp || '—' },
+    { label:'Électricité verte', val: d.vert },
+    { label:'Contrat', val: d.type === 'fixe' ? 'Prix fixe' : 'Indexé', sub: d.valid || '' },
+    { label:'Engagement', val: d.eng },
   ];
-
-  document.getElementById('sh-grid').innerHTML = cells.map(c =>
-    `<div class="sheet-cell">
-      <div class="sheet-cell-label">${c.label}</div>
-      <div class="sheet-cell-val">${c.val}</div>
-      ${c.sub ? `<div class="sheet-cell-sub">${c.sub}</div>` : ''}
-    </div>`
-  ).join('');
-
-  document.getElementById('sh-footer').innerHTML = d.url
-    ? `<a href="${d.url}" target="_blank" rel="noopener" class="sheet-souscire">Voir l'offre →</a>`
-    : '';
-
+  document.getElementById('sh-grid').innerHTML = cells.map(c => `<div class="sheet-cell"><div class="sheet-cell-label">${c.label}</div><div class="sheet-cell-val">${c.val}</div>${c.sub ? `<div class="sheet-cell-sub">${c.sub}</div>` : ''}</div>`).join('');
+  document.getElementById('sh-footer').innerHTML = d.url ? `<a href="${d.url}" target="_blank" rel="noopener" class="sheet-souscire">Voir l'offre →</a>` : '';
   document.getElementById('sheet-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeSheet(e) {
   if (e && e.target !== document.getElementById('sheet-overlay')) return;
   document.getElementById('sheet-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 </script>
 </body>
