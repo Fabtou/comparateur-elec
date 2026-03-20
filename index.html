@@ -637,12 +637,16 @@ function drawChart() {
   const colorTRV    = '#185FA5';
   const colorBest   = '#0F766E';
 
-  // Simple canvas chart
+  // Retina/HiDPI fix — multiply by devicePixelRatio
+  const dpr = window.devicePixelRatio || 1;
   const W = ctx.parentElement.clientWidth - 48;
   const H = 220;
-  ctx.width  = W;
-  ctx.height = H;
+  ctx.width  = W * dpr;
+  ctx.height = H * dpr;
+  ctx.style.width  = W + 'px';
+  ctx.style.height = H + 'px';
   const c = ctx.getContext('2d');
+  c.scale(dpr, dpr);
   const pad = { top: 20, right: 20, bottom: 40, left: 52 };
   const cw = W - pad.left - pad.right;
   const ch = H - pad.top  - pad.bottom;
