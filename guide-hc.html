@@ -127,6 +127,30 @@
     .mini-fill{height:100%;border-radius:3px}
     .mini-cursor{position:absolute;top:-1px;width:2px;height:7px;background:var(--text);border-radius:1px;transform:translateX(-50%)}
 
+    /* ── Mini-guide ── */
+    .guide-block{border:1px solid var(--border);border-radius:var(--r);background:var(--surface);overflow:hidden;margin-bottom:2rem}
+    .guide-block summary{display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;cursor:pointer;font-size:14px;font-weight:500;list-style:none;user-select:none}
+    .guide-block summary::-webkit-details-marker{display:none}
+    .guide-block summary:hover{background:var(--surface2)}
+    .guide-icon{font-size:18px;flex-shrink:0}
+    .guide-chevron{margin-left:auto;color:var(--muted);font-size:18px;transition:transform .2s;font-style:normal}
+    .guide-block[open] .guide-chevron{transform:rotate(90deg)}
+    .guide-body{padding:0 1.25rem 1.5rem;border-top:1px solid var(--border)}
+    .guide-method{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+    .guide-method:last-child{border-bottom:none}
+    .method-num{width:28px;height:28px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font-weight:500;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+    .method-title{font-weight:500;font-size:13px;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .method-badge{font-size:10px;background:var(--green-bg);color:var(--green);padding:1px 6px;border-radius:10px;font-weight:400}
+    .method-text{font-size:12px;color:var(--muted);line-height:1.7}
+    .method-text a{color:var(--accent)}
+    .method-tip{margin-top:.5rem;background:var(--surface2);border-radius:var(--rs);padding:.4rem .75rem;font-size:11px;color:var(--text)}
+    .method-formula{margin-top:.5rem;font-family:var(--mono);font-size:12px;background:var(--surface2);border-radius:var(--rs);padding:.4rem .75rem;color:var(--text)}
+    .profile-table{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:11px}
+    .profile-table th{text-align:left;padding:4px 8px;background:var(--surface2);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+    .profile-table td{padding:5px 8px;border-bottom:1px solid var(--border)}
+    .profile-table tr:last-child td{border-bottom:none}
+    .num-cell{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--accent);text-align:right}
+
     footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border)}
     footer a{color:var(--faint);text-decoration:underline}
     @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -160,16 +184,6 @@
           <span class="input-suffix">kWh</span>
         </div>
       </div>
-      <div class="sim-field">
-        <label>Puissance compteur</label>
-        <select id="sel-kva">
-          <option value="3">3 kVA</option>
-          <option value="6" selected>6 kVA</option>
-          <option value="9">9 kVA</option>
-          <option value="12">12 kVA</option>
-          <option value="15">15 kVA</option>
-        </select>
-      </div>
       <div class="sim-field" style="flex:1;min-width:200px">
         <label>Ma part en HC actuelle</label>
         <div style="display:flex;align-items:center;gap:10px">
@@ -183,11 +197,79 @@
     </div>
   </div>
 
+  <!-- ── Mini guide ── -->
+
+  <details class="guide-block fade" style="animation-delay:.12s">
+    <summary>
+      <span class="guide-icon">📊</span>
+      <span>Comment connaître ma part en heures creuses ?</span>
+      <span class="guide-chevron">›</span>
+    </summary>
+    <div class="guide-body">
+
+      <div class="guide-method">
+        <div class="method-num">1</div>
+        <div>
+          <div class="method-title">Votre espace client Enedis <span class="method-badge">Le plus fiable</span></div>
+          <div class="method-text">
+            Sur <a href="https://mon-compte-client.enedis.fr" target="_blank" rel="noopener">mon-compte-client.enedis.fr</a>, rubrique <strong>Ma consommation → Courbe de charge</strong>.
+            Vous voyez la conso heure par heure. Sélectionnez une période d'un mois, filtrez par tranche horaire HC
+            (indiquée sur votre contrat ou votre facture) et divisez par la conso totale.
+            <div class="method-tip">💡 Plages HC typiques : 22h–6h (+ coupure 13h–15h selon zones). Vérifiez sur votre facture.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-method">
+        <div class="method-num">2</div>
+        <div>
+          <div class="method-title">Votre facture ou relevé de compteur</div>
+          <div class="method-text">
+            Si vous êtes déjà en option HC/HP, votre facture distingue les index HC et HP.
+            Deux relevés à quelques mois d'intervalle suffisent :
+            <div class="method-formula">% HC = (kWh HC consommés) ÷ (kWh HC + kWh HP) × 100</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-method">
+        <div class="method-num">3</div>
+        <div>
+          <div class="method-title">Estimation par profil de vie</div>
+          <div class="method-text">
+            <table class="profile-table">
+              <thead><tr><th>Profil</th><th>% HC estimé</th><th>Pourquoi</th></tr></thead>
+              <tbody>
+                <tr><td>Actif·ve, peu à la maison en journée</td><td class="num-cell">35–45%</td><td>Lave-linge, lave-vaisselle le soir/nuit</td></tr>
+                <tr><td>Télétravail ou retraité·e</td><td class="num-cell">20–30%</td><td>Conso répartie sur toute la journée</td></tr>
+                <tr><td>Chauffe-eau programmé la nuit</td><td class="num-cell">+8–15%</td><td>Gros consommateur facilement décalable</td></tr>
+                <tr><td>Voiture électrique (recharge nuit)</td><td class="num-cell">+10–25%</td><td>Selon kilométrage annuel</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-method">
+        <div class="method-num">4</div>
+        <div>
+          <div class="method-title">Demander le relevé à votre fournisseur</div>
+          <div class="method-text">
+            Votre fournisseur actuel peut vous communiquer la répartition HC/HP sur les 12 derniers mois — même si vous êtes en option Base. Le compteur Linky enregistre toujours les deux index.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </details>
+
+
   <div class="explain fade" style="animation-delay:.06s" id="explain-box">
     Chargement…
   </div>
 
   <!-- Cards -->
+
   <div class="section-title">Par fournisseur — vue visuelle</div>
   <div class="cards-grid fade" id="cards-grid" style="animation-delay:.08s"></div>
 
@@ -210,6 +292,7 @@
       <tbody id="table-body"></tbody>
     </table>
   </div>
+
 
   <div style="margin-top:1.5rem;font-size:11px;color:var(--faint);line-height:1.7">
     * Le seuil de rentabilité est calculé en trouvant le % HC à partir duquel le coût HC/HP = coût Base, toutes choses égales (même fournisseur, même offre, même consommation, même abonnement). En dessous de ce seuil, l'option Base est moins chère. La barre montre votre position actuelle (trait noir) par rapport au seuil. Tarifs TTC 6 kVA mars 2026.
@@ -377,14 +460,20 @@ function render() {
         </div>
         <div class="card-detail">
           <div class="detail-cell">
-            <div class="detail-label">kWh moyen (à ${Math.round(myHcPct*100)}% HC)</div>
-            <div class="detail-val" style="color:var(--accent)">${(hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct)).toFixed(4)} €</div>
+            <div class="detail-label">kWh base</div>
+            <div class="detail-val">${base.kwh_base.toFixed(4)} €</div>
           </div>
           <div class="detail-cell">
-            <div class="detail-label">vs kWh base</div>
-            <div class="detail-val" style="color:${(hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct)) < base.kwh_base ? 'var(--green)' : 'var(--red)'}">
-              ${((hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct) - base.kwh_base) * 10000).toFixed(1) > 0 ? '+' : ''}${((hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct) - base.kwh_base) * 10000).toFixed(1)} cts
-            </div>
+            <div class="detail-label">kWh moy. (${Math.round(myHcPct*100)}% HC)</div>
+            ${(() => {
+              const moy = hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct);
+              const diff = (moy - base.kwh_base) * 100;
+              const better = moy < base.kwh_base;
+              return `<div class="detail-val" style="color:var(--accent)">${moy.toFixed(4)} €</div>
+                      <div style="font-size:10px;color:${better ? 'var(--green)' : 'var(--red)'}">
+                        ${diff > 0 ? '+' : ''}${diff.toFixed(2)} cts/kWh
+                      </div>`;
+            })()}
           </div>
           <div class="detail-cell">
             <div class="detail-label">kWh HC / HP</div>
@@ -441,9 +530,6 @@ function render() {
 document.getElementById('inp-conso').addEventListener('input', e => {
   const v = parseInt(e.target.value);
   if (v >= 100 && v <= 50000) { conso = v; render(); }
-});
-document.getElementById('sel-kva').addEventListener('change', e => {
-  kva = parseInt(e.target.value); render();
 });
 
 const slHC  = document.getElementById('sl-hc');
