@@ -83,9 +83,9 @@
     .fbtn:hover{border-color:var(--border2);color:var(--text)}
     .fbtn.active{background:var(--text);color:var(--bg);border-color:var(--text)}
 
-    .tscroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+    .tscroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);overflow-y:visible}
     table{width:100%;border-collapse:collapse;background:var(--surface);min-width:920px}
-    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 13px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;position:sticky;top:52px;z-index:10}
     thead th:first-child{text-align:left;min-width:190px}
     thead th.th-c{text-align:center}
     thead th.sortable{cursor:pointer;user-select:none;transition:color .1s}
@@ -179,9 +179,16 @@
       .col-desktop{display:none}
       .tscroll{border-radius:var(--r)}
       table{min-width:0;width:100%}
-      thead th:first-child{min-width:140px}
-      td,thead th{padding:9px 10px;font-size:12px}
-      .num-big{font-size:14px}
+      thead th:first-child{min-width:120px}
+      td,thead th{padding:7px 8px;font-size:11px;letter-spacing:-.01em}
+      .num-big{font-size:12px}
+      .num{font-size:11px}
+      .saving{font-size:10px;padding:2px 5px}
+      .prov-name{font-size:12px}
+      .offer-name{font-size:10px}
+      .mode-pill{font-size:8px;padding:1px 4px}
+      .best-tag{font-size:8px;padding:1px 4px}
+      .sav-ref{font-size:10px}
     }
     @media(min-width:721px){.col-mobile{display:none}}
 
@@ -209,7 +216,7 @@
 <header>
   <div class="logo">
     <div class="logo-icon" style="background:none;overflow:visible"><img src="icon-192.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
-    <div><h1>Le comparateur d'électricité by Fabien 🐅</h1><div class="header-sub">France · particuliers</div></div>
+    <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers</div></div>
   </div>
   <div id="badge-date">Chargement…</div>
 </header>
