@@ -177,6 +177,7 @@
     <a href="calculateur-hc.html" class="nav-link">Rentabilité HC/HP</a>
     <a href="conseils.html" class="nav-link">Conseils</a>
   </nav>
+  <div id="badge-date-gaz" style="display:none">—</div>
   <button class="hamburger" id="hamburger-btn" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -275,7 +276,7 @@ let activeFilter = 'all';
 
 async function load() {
   try {
-    const r = await fetch('./tarifs-gaz.json?t=' + Date.now());
+    const r = await fetch('./tarifs-gaz.json');
     data = await r.json();
 
     // Restore prefs
@@ -290,7 +291,7 @@ async function load() {
     document.getElementById('sel-usage').value = usage;
 
     const d = new Date(data.meta.updated_at);
-    document.getElementById('badge-date-gaz').textContent = '🔥 ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+    const bdg = document.getElementById('badge-date-gaz'); if(bdg){ bdg.style.display=''; bdg.textContent = '🔥 ' + d.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'}); }
 
     render();
   } catch(e) {
