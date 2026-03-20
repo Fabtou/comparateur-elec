@@ -195,6 +195,47 @@
     .nav-link.active{color:var(--text);background:var(--surface2);border:1px solid var(--border)}
     .nav-link:not(.active){border:1px solid transparent}
     @media(max-width:600px){.nav-link{font-size:11px;padding:5px 9px}}
+    /* ── Hamburger menu ── */
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border-radius:6px;background:none;border:none;z-index:200}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+    /* Mobile nav drawer */
+    .nav-drawer{display:none;position:fixed;inset:0;z-index:150;background:rgba(0,0,0,.45)}
+    .nav-drawer.open{display:block}
+    .nav-drawer-inner{position:absolute;top:0;right:0;width:min(280px,85vw);height:100%;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;padding:1.5rem 1.25rem;gap:.25rem;box-shadow:-4px 0 20px rgba(0,0,0,.15)}
+    .nav-drawer-close{align-self:flex-end;background:none;border:none;font-size:22px;color:var(--muted);cursor:pointer;padding:4px 8px;margin-bottom:.75rem}
+    .nav-drawer .nav-link{font-size:15px;padding:10px 14px;border-radius:var(--rs);border:none!important;display:block;text-align:left}
+    .nav-drawer .nav-link.active{background:var(--surface2);color:var(--text)}
+
+    @media(max-width:720px){
+      /* Header: logo left, hamburger right */
+      header{grid-template-columns:1fr auto;padding:.9rem 1.1rem}
+      header nav{display:none}
+      #badge-date,#badge-date-gaz{display:none}
+      .hamburger{display:flex}
+
+      /* Main padding */
+      main{padding:1.25rem 1rem 4rem}
+
+      /* Tables: hide less-important columns, show them via detail sheet */
+      .col-desktop{display:none}
+
+      /* Scrollable table wrapper */
+      .tscroll{border-radius:var(--rs)}
+      table{min-width:0!important}
+
+      /* Summary cards: 2 cols */
+      .summary,.sim-row{flex-direction:column;gap:1rem}
+      .sim-grid{grid-template-columns:1fr!important}
+      .cards-grid{grid-template-columns:1fr!important}
+    }
+    @media(max-width:400px){
+      header{padding:.75rem .9rem}
+    }
+
     @media(max-width:640px){header{padding:1rem}main{padding:1rem 1rem 3rem}.sim{padding:1.1rem}.sim-grid{grid-template-columns:1fr}}
 
     /* ── Mobile table ── */
@@ -796,5 +837,20 @@ function closeSheet(e) {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 </script>
+
+  // ── Hamburger menu ────────────────────────────────────────────────
+  (function(){
+    const btn = document.getElementById('hamburger-btn');
+    const drawer = document.getElementById('nav-drawer');
+    const closeBtn = document.getElementById('nav-drawer-close');
+    if (!btn) return;
+    function openMenu(){ btn.classList.add('open'); drawer.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeMenu(){ btn.classList.remove('open'); drawer.classList.remove('open'); document.body.style.overflow=''; }
+    btn.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    drawer.addEventListener('click', e=>{ if(e.target===drawer) closeMenu(); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeMenu(); });
+  })();
+
 </body>
 </html>
