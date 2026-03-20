@@ -67,7 +67,7 @@
 
     @media(max-width:720px){
       /* Header: logo left, hamburger right */
-      header{grid-template-columns:1fr auto;padding:.9rem 1.1rem}
+      header{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.1rem}
       header nav{display:none}
       #badge-date,#badge-date-gaz{display:none}
       .hamburger{display:flex}
@@ -220,11 +220,11 @@
     <a href="calculateur-hc.html" class="nav-link active">Rentabilité HC/HP</a>
     <a href="conseils.html" class="nav-link">Conseils</a>
   </nav>
+
+  <!-- Mobile nav drawer -->
   <button class="hamburger" id="hamburger-btn" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
-
-  <!-- Mobile nav drawer -->
   <div class="nav-drawer" id="nav-drawer">
     <div class="nav-drawer-inner">
       <button class="nav-drawer-close" id="nav-drawer-close">✕</button>
