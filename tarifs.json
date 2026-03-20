@@ -1,15 +1,18 @@
 {
   "meta": {
-    "updated_at": "2026-03-18T00:00:00Z",
+    "updated_at": "2026-03-20T08:58:17Z",
     "source": "Selectra / Kelwatt — tarifs TTC mars 2026",
     "base_kwva": 6,
-    "note": "Tarifs TTC pour compteur 6 kVA. Mis à jour automatiquement chaque semaine."
+    "note": "Tarifs TTC pour compteur 6 kVA. Mis à jour automatiquement chaque semaine.",
+    "last_changes": [
+      "edf-tarif-bleu"
+    ]
   },
   "trv": {
-    "kwh_base": 0.1940,
+    "kwh_base": 0.194,
     "kwh_hc": 0.1579,
     "kwh_hp": 0.2065,
-    "abo_annuel": 187.80
+    "abo_annuel": 187.8
   },
   "fournisseurs": [
     {
@@ -23,7 +26,7 @@
       "kwh_base": 0.1673,
       "kwh_hc": 0.1373,
       "kwh_hp": 0.1777,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "url": "https://particuliers.alpiq.fr"
     },
@@ -38,7 +41,7 @@
       "kwh_base": 0.1703,
       "kwh_hc": null,
       "kwh_hp": null,
-      "abo_annuel": 187.90,
+      "abo_annuel": 187.9,
       "sans_engagement": true,
       "url": "https://www.ohm-energie.com"
     },
@@ -50,10 +53,10 @@
       "vert": true,
       "vert_option": false,
       "label_vert": "Garanties d'Origine",
-      "kwh_base": 0.1700,
+      "kwh_base": 0.17,
       "kwh_hc": 0.1437,
       "kwh_hp": 0.1869,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "url": "https://ekwateur.fr"
     },
@@ -68,7 +71,7 @@
       "kwh_base": 0.1783,
       "kwh_hc": 0.1458,
       "kwh_hp": 0.1895,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "url": "https://www.totalenergies.fr"
     },
@@ -83,7 +86,7 @@
       "kwh_base": 0.1989,
       "kwh_hc": 0.1675,
       "kwh_hp": 0.2118,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "url": "https://www.totalenergies.fr"
     },
@@ -98,7 +101,7 @@
       "kwh_base": 0.1862,
       "kwh_hc": 0.1519,
       "kwh_hp": 0.1979,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "url": "https://octopusenergy.fr"
     },
@@ -128,7 +131,7 @@
       "kwh_base": 0.1814,
       "kwh_hc": 0.1482,
       "kwh_hp": 0.1929,
-      "abo_annuel": 216.60,
+      "abo_annuel": 216.6,
       "sans_engagement": false,
       "url": "https://www.eniplenitude.fr"
     },
@@ -155,10 +158,10 @@
       "vert": false,
       "vert_option": false,
       "label_vert": null,
-      "kwh_base": 0.1940,
+      "kwh_base": 0.1673,
       "kwh_hc": 0.1579,
       "kwh_hp": 0.2065,
-      "abo_annuel": 187.80,
+      "abo_annuel": 187.8,
       "sans_engagement": true,
       "is_trv": true,
       "url": "https://particulier.edf.fr"
