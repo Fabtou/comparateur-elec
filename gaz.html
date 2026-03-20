@@ -246,7 +246,7 @@ async function load() {
 }
 
 function offreCost(o) {
-  return o.kwh * conso + o.abo_mensuel * 12;
+  return o.kwh * conso + o.abo_annuel;
 }
 
 function repere() {
@@ -272,7 +272,7 @@ function render() {
     if (sortKey === 'cost' || sortKey === 'monthly' || sortKey === 'vs') {
       va = offreCost(a); vb = offreCost(b);
     } else if (sortKey === 'kwh')  { va = a.kwh;         vb = b.kwh; }
-    else if (sortKey === 'abo')    { va = a.abo_mensuel;  vb = b.abo_mensuel; }
+    else if (sortKey === 'abo')    { va = a.abo_annuel;  vb = b.abo_annuel; }
     else { va = a.fournisseur;     vb = b.fournisseur; }
     if (va < vb) return -sortDir;
     if (va > vb) return sortDir;
@@ -321,7 +321,7 @@ function render() {
       <td><span class="${savClass}">${diff === null ? '—' : diff > 0 ? '−' + diff + ' €' : diff < 0 ? '+' + Math.abs(diff) + ' €' : '='}
       </span></td>
       <td><span class="num">${o.kwh.toFixed(4)} €</span></td>
-      <td><span class="num">${Math.round(o.abo_mensuel * 12)} €</span></td>
+      <td><span class="num">${Math.round(o.abo_annuel)} €</span></td>
       <td style="text-align:center">${o.vert ? `<span class="vert-badge" title="${o.label_vert || ''}">✓</span>` : '<span style="color:var(--faint);font-size:11px">—</span>'}</td>
       <td style="text-align:center">${o.is_repere ? '—' : `<a href="${o.url}" target="_blank" rel="noopener" class="souscire-btn">Voir →</a>`}</td>
     </tr>`;
