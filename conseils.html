@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conseils pour réduire sa facture d'électricité — Comparateur électricité 🐅</title>
+  <meta name="description" content="Astuces concrètes et précises pour réduire sa consommation d'électricité et optimiser ses dépenses énergétiques." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#F7F5F0;--surface:#fff;--surface2:#F2EFE9;
+      --border:#E2DDD4;--border2:#C8C2B5;
+      --text:#1A1714;--muted:#7A7268;--faint:#B0A99E;
+      --accent:#185FA5;--accent-bg:#EBF3FC;
+      --green:#276749;--green-bg:#E8F5EE;
+      --amber:#92400E;--amber-bg:#FEF3C7;
+      --red:#9B1C1C;--red-bg:#FEE2E2;
+      --r:10px;--rs:6px;
+      --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0F0F0F;--surface:#1A1A1A;--surface2:#222;
+        --border:#2E2E2E;--border2:#444;
+        --text:#F0EDE8;--muted:#8A8480;--faint:#555250;
+        --accent:#4A9EE8;--accent-bg:#0D2235;
+        --green:#34D399;--green-bg:#052E1C;
+        --amber:#FCD34D;--amber-bg:#2D1F00;
+        --red:#F87171;--red-bg:#2D0A0A;
+      }
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+    /* ── Header ── */
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.75rem;position:sticky;top:0;z-index:100}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .logo-icon{width:30px;height:30px}
+    h1{font-size:16px;font-weight:500;letter-spacing:-.02em}
+    .header-sub{font-size:12px;color:var(--muted)}
+    .header-nav{justify-self:center}
+    nav{display:flex;align-items:center;gap:4px}
+    .nav-link{font-size:13px;font-weight:500;padding:6px 14px;border-radius:20px;text-decoration:none;color:var(--muted);transition:all .15s;white-space:nowrap}
+    .nav-link:hover{color:var(--text);background:var(--surface2)}
+    .nav-link.active{color:var(--text);background:var(--surface2);border:1px solid var(--border)}
+    .nav-link:not(.active){border:1px solid transparent}
+    @media(max-width:600px){.nav-link{font-size:11px;padding:5px 9px}}
+
+    /* ── Layout ── */
+    main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 6rem}
+    .page-title{font-size:28px;font-weight:500;letter-spacing:-.03em;margin-bottom:.5rem}
+    .page-sub{font-size:14px;color:var(--muted);line-height:1.7;max-width:620px;margin-bottom:2.5rem}
+
+    /* ── Sections ── */
+    .section{margin-bottom:3rem}
+    .section-header{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:2px solid var(--border)}
+    .section-icon{font-size:22px;line-height:1}
+    .section-title{font-size:18px;font-weight:500;letter-spacing:-.02em}
+    .section-sub{font-size:12px;color:var(--muted);margin-top:1px}
+
+    /* ── Tip cards ── */
+    .tips{display:flex;flex-direction:column;gap:.75rem}
+    .tip{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.25rem;display:grid;grid-template-columns:auto 1fr;gap:.75rem 1rem;align-items:start}
+    .tip:hover{border-color:var(--border2)}
+    .tip-icon{font-size:20px;line-height:1;padding-top:2px}
+    .tip-title{font-weight:500;font-size:14px;margin-bottom:.3rem}
+    .tip-body{font-size:13px;color:var(--muted);line-height:1.65}
+    .tip-body strong{color:var(--text);font-weight:500}
+    .tip-body code{font-family:var(--mono);font-size:12px;background:var(--surface2);padding:1px 5px;border-radius:3px;color:var(--text)}
+
+    /* Impact badges */
+    .tip-meta{display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap}
+    .badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;letter-spacing:.02em}
+    .badge-saving-high{background:var(--green-bg);color:var(--green)}
+    .badge-saving-mid{background:var(--amber-bg);color:var(--amber)}
+    .badge-saving-low{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+    .badge-effort-easy{background:var(--accent-bg);color:var(--accent)}
+    .badge-effort-med{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+    .badge-effort-hard{background:var(--red-bg);color:var(--red)}
+
+    /* ── Intro callout ── */
+    .callout{background:var(--surface2);border-left:3px solid var(--border2);border-radius:0 var(--rs) var(--rs) 0;padding:.9rem 1.1rem;font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:2rem}
+    .callout strong{color:var(--text)}
+
+    footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border)}
+    footer a{color:var(--faint);text-decoration:underline}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .fade{animation:fadeUp .3s ease both}
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div class="logo-icon"><img src="icon-192.png" width="30" height="30" alt="Logo" style="border-radius:4px" /></div>
+    <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-link">Comparateur</a>
+    <a href="calculateur-hc.html" class="nav-link">Rentabilité HC/HP</a>
+    <a href="conseils.html" class="nav-link active">Conseils</a>
+  </nav>
+</header>
+
+<main>
+  <div class="fade">
+    <div class="page-title">Optimiser sa consommation d'électricité</div>
+    <div class="page-sub">Astuces concrètes classées par thème. Pas de discours généraux : des valeurs, des gestes précis, des ordres de grandeur réels.</div>
+  </div>
+
+  <div class="callout fade" style="animation-delay:.03s">
+    <strong>Comment lire ce guide.</strong> Chaque conseil indique l'économie potentielle annuelle (ordre de grandeur pour un foyer moyen) et l'effort requis. Les consommations citées sont issues des bases Ademe et des fiches techniques constructeurs.
+  </div>
+
+  <!-- ── 1. Chauffage ── -->
+  <div class="section fade" style="animation-delay:.05s">
+    <div class="section-header">
+      <div class="section-icon">🌡️</div>
+      <div>
+        <div class="section-title">Chauffage électrique</div>
+        <div class="section-sub">Le poste n°1 — souvent 50 à 70 % de la facture en logement mal isolé</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">🎯</div>
+        <div>
+          <div class="tip-title">1 °C de moins = −7 % sur le chauffage</div>
+          <div class="tip-body">Passer de 21 °C à 19 °C dans les pièces de vie représente <strong>~14 % d'économie</strong> sur le poste chauffage, soit 80–150 €/an selon la surface. En dessous de 16 °C dans une chambre inoccupée, le gain est maximal sans risque pour l'humidité.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">Économie élevée</span><span class="badge badge-effort-easy">Sans effort</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">📅</div>
+        <div>
+          <div class="tip-title">Programmer le hors-gel en période d'absence</div>
+          <div class="tip-body">Un radiateur à inertie ou à fil pilote laissé en mode <strong>Éco (7–8 °C)</strong> la nuit ou en journée absence consomme 3 à 5× moins qu'en mode confort. Le passage au mode Confort 30 min avant le retour suffit pour les radiateurs à inertie sèche (pierre ou fonte). Investissement : <strong>fil pilote déjà présent</strong> sur la plupart des radiateurs récents, sinon thermostat connecté à 30–60 €.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">100–200 €/an</span><span class="badge badge-effort-easy">Facile</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🪟</div>
+        <div>
+          <div class="tip-title">Ventiler 5–10 min, fenêtre grand ouverte</div>
+          <div class="tip-body">Ventiler 5 min fenêtre grande ouverte refroidit l'air ambiant sans refroidir les murs (inertie thermique). À l'inverse, laisser une fenêtre entrouverte plusieurs heures refroidit la structure et coûte <strong>2 à 4× plus d'énergie</strong> pour revenir à température. En hiver : ouvrir tôt le matin (température extérieure minimale), pas en soirée.</div>
+          <div class="tip-meta"><span class="badge badge-saving-mid">20–50 €/an</span><span class="badge badge-effort-easy">Habitude</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🚪</div>
+        <div>
+          <div class="tip-title">Fermer les portes des pièces non chauffées</div>
+          <div class="tip-body">Une pièce froide communicante (couloir, WC, garage) crée un pont thermique permanent. <strong>Calfeutrer les portes</strong> avec des joints en V ou en brosse (3–8 € la porte) réduit les échanges. Si la pièce est effectivement inutilisée, régler son radiateur en hors-gel plutôt que de le couper — un mur froid absorbera la chaleur de la pièce adjacente.</div>
+          <div class="tip-meta"><span class="badge badge-saving-mid">30–80 €/an</span><span class="badge badge-effort-easy">Facile</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🔧</div>
+        <div>
+          <div class="tip-title">Dépoussiérer les radiateurs — vraiment</div>
+          <div class="tip-body">Un radiateur à ailettes encrassé perd jusqu'à <strong>15 % d'efficacité</strong>. La poussière form un isolant thermique sur les résistances. Passer l'aspirateur dans les fentes une fois par an avant la saison suffit. Pour les radiateurs à eau : purger les robinets thermostatiques si l'ailette ne chauffe pas uniformément.</div>
+          <div class="tip-meta"><span class="badge badge-saving-low">5–15 %</span><span class="badge badge-effort-easy">15 min/an</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 2. Eau chaude ── -->
+  <div class="section fade" style="animation-delay:.07s">
+    <div class="section-header">
+      <div class="section-icon">🚿</div>
+      <div>
+        <div class="section-title">Eau chaude sanitaire</div>
+        <div class="section-sub">2e poste — 10 à 20 % de la facture selon le foyer</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">⏰</div>
+        <div>
+          <div class="tip-title">Chauffe-eau en heures creuses uniquement</div>
+          <div class="tip-body">Un chauffe-eau de 200 L consomme <strong>2 000–3 000 kWh/an</strong>. Le programmer sur les heures creuses (typiquement 22h–6h) réduit ce coût de <strong>25–40 %</strong> selon les écarts tarifaires HC/HP de votre contrat. Le ballon garde la chaleur 12–18 h si bien isolé — un bain chaud le matin après une chauffe nocturne est tout à fait possible. Vérifier que le programmateur interne (horloge mécanique) est à l'heure, surtout après une coupure.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">60–120 €/an</span><span class="badge badge-effort-easy">Réglage unique</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🌡️</div>
+        <div>
+          <div class="tip-title">Thermostat à 55 °C, pas plus</div>
+          <div class="tip-body">Au-delà de 55 °C, le calcaire précipite 3 à 5× plus vite, accélérant le dépôt de tartre et réduisant la durée de vie de la résistance. <strong>55 °C est la température minimale légale</strong> pour éviter la légionellose — ne pas descendre en dessous. Inutile de monter à 70 °C : on ne stocke pas davantage d'énergie utile, on consomme plus et on détériore plus vite.</div>
+          <div class="tip-meta"><span class="badge badge-saving-mid">15–30 €/an</span><span class="badge badge-effort-easy">Réglage unique</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🚿</div>
+        <div>
+          <div class="tip-title">Réducteur de débit sur les douches</div>
+          <div class="tip-body">Un pommeau standard débite 12–15 L/min. Un pommeau économe certifié débit réduit : <strong>6–8 L/min</strong>. Pour une douche de 8 min à 2 personnes, c'est 80–120 L économisés par jour, soit <strong>40–60 kWh/mois</strong> de moins à chauffer. Coût : 15–30 €, retour sur investissement en 2–4 mois. Choisir un modèle avec aérateur (sensation de débit identique).</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">80–150 €/an</span><span class="badge badge-effort-easy">Installation 5 min</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🔍</div>
+        <div>
+          <div class="tip-title">Détecter les fuites chaudes (robinet, joint)</div>
+          <div class="tip-body">Un robinet qui goutte à <strong>1 goutte/seconde</strong> perd ~13 L/h. Si c'est de l'eau chaude, c'est de l'énergie payée deux fois (eau + chauffe-eau). Tester : couper l'alimentation froide et regarder si le compteur d'eau bouge encore. Un joint de mitigeur coûte 2–5 € et se change en 20 min — économie potentielle : <strong>30–80 € de chauffe-eau</strong> par an.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">30–80 €/an</span><span class="badge badge-effort-med">DIY simple</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 3. Électroménager ── -->
+  <div class="section fade" style="animation-delay:.09s">
+    <div class="section-header">
+      <div class="section-icon">🧺</div>
+      <div>
+        <div class="section-title">Électroménager</div>
+        <div class="section-sub">Lave-linge, lave-vaisselle, réfrigérateur — facilement optimisables</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">🌡️</div>
+        <div>
+          <div class="tip-title">Laver à 30 °C ou 40 °C, pas 60 °C</div>
+          <div class="tip-body"><strong>90 % de l'énergie</strong> d'un lave-linge sert à chauffer l'eau. Passer de 60 °C à 30 °C divise la consommation par 3 à 4 sur ce poste. Les lessives modernes (enzymes actives dès 20 °C) sont efficaces à froid pour les textiles courants. Réserver les 60 °C aux draps, torchons et linge de bébé. Programme Éco : souvent plus long mais 30–50 % moins énergivore que le programme standard équivalent.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">20–40 €/an</span><span class="badge badge-effort-easy">Habitude</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🍽️</div>
+        <div>
+          <div class="tip-title">Lave-vaisselle : programme Éco et plein chargement</div>
+          <div class="tip-body">Le programme Éco d'un lave-vaisselle récent consomme <strong>0,7–0,9 kWh</strong> contre 1,2–1,5 kWh en programme intensif. Il chauffe moins vite mais maintient la température plus longtemps — résultat identique. Un lave-vaisselle à moitié plein consomme autant qu'à plein : attendre le chargement complet. Programmer la nuit en heures creuses : double économie (tarif + débit réseau).</div>
+          <div class="tip-meta"><span class="badge badge-saving-mid">15–30 €/an</span><span class="badge badge-effort-easy">Habitude</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">❄️</div>
+        <div>
+          <div class="tip-title">Réfrigérateur : température et emplacement</div>
+          <div class="tip-body">Réglage optimal : <strong>4–5 °C</strong> pour le réfrigérateur, <strong>−18 °C</strong> pour le congélateur. Descendre à 3 °C ou −20 °C augmente la consommation de 5–10 % sans bénéfice. Éloigner l'appareil des sources de chaleur (four, soleil direct) : +1 °C ambiant = +2–3 % de conso. Dégivrer quand la couche de givre dépasse 3 mm — au-delà, l'efficacité chute fortement.</div>
+          <div class="tip-meta"><span class="badge badge-saving-low">10–25 €/an</span><span class="badge badge-effort-easy">Réglage</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🧊</div>
+        <div>
+          <div class="tip-title">Ne pas mettre d'aliments chauds au réfrigérateur</div>
+          <div class="tip-body">Un plat chaud (70 °C) mis directement au frigo force le compresseur à travailler en continu pendant <strong>30–90 min</strong>, avec un pic de consommation jusqu'à 3× la normale. Laisser refroidir à température ambiante (max 30–45 min pour la sécurité alimentaire), puis réfrigérer.</div>
+          <div class="tip-meta"><span class="badge badge-saving-low">5–15 €/an</span><span class="badge badge-effort-easy">Habitude</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 4. Veille et phantom load ── -->
+  <div class="section fade" style="animation-delay:.11s">
+    <div class="section-header">
+      <div class="section-icon">🔌</div>
+      <div>
+        <div class="section-title">Veille et consommation fantôme</div>
+        <div class="section-sub">Souvent sous-estimé : 5 à 10 % de la facture sans rien faire</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">📺</div>
+        <div>
+          <div class="tip-title">Éteindre vraiment les appareils en veille</div>
+          <div class="tip-body">Ordres de grandeur réels en veille : TV LCD <code>0,5–1,5 W</code>, décodeur satellite/TNT <code>7–15 W</code>, box internet <code>8–12 W</code>, ampli HiFi <code>3–8 W</code>. Une box internet à 10 W allumée 24h/24 consomme <strong>87 kWh/an</strong> soit ~17 €. Multiplié par 5–8 appareils, la veille peut représenter <strong>80–200 € par an</strong>. Multiprises à interrupteur sur les zones TV et bureau.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">80–200 €/an</span><span class="badge badge-effort-easy">Multiprises ~10 €</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">💡</div>
+        <div>
+          <div class="tip-title">Chargeurs et alimentations en veille active</div>
+          <div class="tip-body">Un chargeur branché sans appareil consomme <code>0,1–0,5 W</code> — négligeable seul, mais 10 chargeurs = 1–5 W en permanence. Les alimentations de bureau (PC, écrans) maintiennent une veille active à <code>1–5 W</code> même "éteintes". Sur un poste de travail, une multiprise coupée le soir économise <strong>15–40 kWh/an</strong>.</div>
+          <div class="tip-meta"><span class="badge badge-saving-low">5–20 €/an</span><span class="badge badge-effort-easy">Habitude</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">📦</div>
+        <div>
+          <div class="tip-title">Identifier les consommateurs cachés avec un wattmètre</div>
+          <div class="tip-body">Un wattmètre prise (<strong>10–20 €</strong> sur Amazon ou Fnac) mesure la consommation réelle de chaque appareil. Brancher 24h un appareil suspect et multiplier par 8 760 heures. Révèle souvent des surprises : vieux congélateur de cave à <strong>300–500 kWh/an</strong>, aquarium, console de jeu laissée en veille. Retour sur investissement immédiat si un seul appareil est identifié.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">Variable</span><span class="badge badge-effort-easy">Outil 20 €</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 5. Éclairage ── -->
+  <div class="section fade" style="animation-delay:.13s">
+    <div class="section-header">
+      <div class="section-icon">💡</div>
+      <div>
+        <div class="section-title">Éclairage</div>
+        <div class="section-sub">Déjà optimisé pour la plupart — quelques points résiduels</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">🔄</div>
+        <div>
+          <div class="tip-title">LED partout, priorité aux ampoules allumées longtemps</div>
+          <div class="tip-body">Une ampoule halogène 50 W remplacée par une LED 7 W à allumage <strong>4h/jour</strong> économise <strong>25 kWh/an</strong> soit ~5 €. Pour 10 ampoules, c'est 50 €/an. Prioriser les pièces à fort usage (cuisine, salon, bureau). Les LED de hall ou WC (usage <10 min/j) ont un retour plus long. Durée de vie LED : 15 000–25 000 h contre 1 000–2 000 h pour l'halogène.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">30–80 €/an</span><span class="badge badge-effort-easy">Remplacement progressif</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🌅</div>
+        <div>
+          <div class="tip-title">Détecteurs de présence pour les espaces de passage</div>
+          <div class="tip-body">Couloir, cave, garage, WC : des pièces souvent éclairées par oubli. Un détecteur de présence avec minuterie réglable (<strong>8–15 €</strong>) coupe automatiquement après 1–3 min. Même en LED, une ampoule oubliée 6h/jour = 10–15 kWh/an de gaspillage pur. À ne pas utiliser dans les pièces à usage long (salon, bureau) où les coupures intempestives sont gênantes.</div>
+          <div class="tip-meta"><span class="badge badge-saving-low">5–20 €/an</span><span class="badge badge-effort-med">Installation simple</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 6. Pilotage et mesure ── -->
+  <div class="section fade" style="animation-delay:.15s">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div>
+        <div class="section-title">Pilotage et mesure</div>
+        <div class="section-sub">Ce qu'on ne mesure pas, on ne l'optimise pas</div>
+      </div>
+    </div>
+    <div class="tips">
+
+      <div class="tip">
+        <div class="tip-icon">📱</div>
+        <div>
+          <div class="tip-title">Activer la courbe de charge Linky (gratuit)</div>
+          <div class="tip-body">Sur <strong>mon-compte-client.enedis.fr</strong>, activer la collecte des données demi-heure. Vous verrez exactement quand vous consommez et combien. Permet de repérer les consommations nocturnes anormales (veilles, fuites), de vérifier que le chauffe-eau se déclenche bien en HC, et de quantifier l'impact de chaque changement de comportement. Délai d'activation : 24–48h.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">Outil de base</span><span class="badge badge-effort-easy">Gratuit</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">⚡</div>
+        <div>
+          <div class="tip-title">Vérifier que les gros appareils ne se cumulent pas au même moment</div>
+          <div class="tip-body">Si votre compteur est en <strong>6 kVA</strong>, la limite est 6 000 W. Four (2 000 W) + lave-linge (2 200 W) + chauffe-eau (2 400 W) = disjonction. Décaler les usages de 30 min évite le déclenchement du disjoncteur <em>et</em> l'usure prématurée des appareils. Passer en 9 kVA coûte ~50 €/an d'abonnement supplémentaire — souvent évitable avec un peu d'organisation.</div>
+          <div class="tip-meta"><span class="badge badge-saving-mid">Évite upgrade compteur</span><span class="badge badge-effort-easy">Organisation</span></div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <div class="tip-icon">🔋</div>
+        <div>
+          <div class="tip-title">Voiture électrique : recharger en heures creuses avec un minuteur</div>
+          <div class="tip-body">Une recharge de 40 kWh coûte <strong>6,3 € en HC (0,158 €/kWh)</strong> contre <strong>8,3 € en HP (0,207 €/kWh)</strong> — soit 2 €/recharge, ~100–200 €/an selon le kilométrage. Sur la plupart des véhicules, programmer l'heure de début depuis l'appli ou le tableau de bord. Sinon, une prise programmable (<strong>15–20 €</strong>) branché sur la borne suffit.</div>
+          <div class="tip-meta"><span class="badge badge-saving-high">100–200 €/an</span><span class="badge badge-effort-easy">Programmation</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Créé par Fabien 🐅 · Données et conseils à titre indicatif ·
+  <a href="index.html">Comparateur</a> ·
+  <a href="calculateur-hc.html">Rentabilité HC/HP</a> ·
+  <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener">Code source</a>
+</footer>
+
+</body>
+</html>
