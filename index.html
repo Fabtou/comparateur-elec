@@ -49,7 +49,7 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
 
-    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.75rem;position:sticky;top:0;z-index:100}
     .logo{display:flex;align-items:center;gap:10px}
     .logo-icon{width:30px;height:30px;background:var(--text);border-radius:var(--rs);display:flex;align-items:center;justify-content:center}
     .logo-icon svg{width:16px;height:16px;fill:var(--bg)}
@@ -186,6 +186,15 @@
     .footnote{margin-top:1.25rem;font-size:11px;color:var(--faint);line-height:1.7}
     @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .fade{animation:fadeUp .3s ease both}
+
+    /* ── Nav ── */
+    .header-nav{justify-self:center}
+    nav{display:flex;align-items:center;gap:4px}
+    .nav-link{font-size:13px;font-weight:500;padding:6px 14px;border-radius:20px;text-decoration:none;color:var(--muted);transition:all .15s;white-space:nowrap}
+    .nav-link:hover{color:var(--text);background:var(--surface2)}
+    .nav-link.active{color:var(--text);background:var(--surface2);border:1px solid var(--border)}
+    .nav-link:not(.active){border:1px solid transparent}
+    @media(max-width:600px){.nav-link{font-size:11px;padding:5px 9px}}
     @media(max-width:640px){header{padding:1rem}main{padding:1rem 1rem 3rem}.sim{padding:1.1rem}.sim-grid{grid-template-columns:1fr}}
 
     /* ── Mobile table ── */
@@ -247,14 +256,16 @@
   </style>
 </head><body>
 <header>
-  <div class="logo">
+  <a class="logo" href="index.html">
     <div class="logo-icon" style="background:none;overflow:visible"><img src="icon-192.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
     <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-    <a href="guide-hc.html" style="font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);text-decoration:none;transition:all .12s" onmouseover="this.style.borderColor='var(--border2)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Guide HC/HP</a>
-    <div id="badge-date">Chargement…</div>
-  </div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-link active">Comparateur</a>
+    <a href="calculateur-hc.html" class="nav-link">Rentabilité HC/HP</a>
+    <a href="conseils.html" class="nav-link">Conseils</a>
+  </nav>
+  <div id="badge-date">Chargement…</div>
 </header>
 
 <div class="alert-banner" id="alert-banner">
@@ -394,7 +405,7 @@
 
 <footer style="text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border);margin-top:0">
   Créé par Fabien 🐅 · Données mises à jour chaque semaine ·
-  <a href="guide-hc.html" style="color:var(--faint);text-decoration:underline">Guide HC/HP</a> ·
+  <a href="calculateur-hc.html" style="color:var(--faint);text-decoration:underline">Rentabilité HC/HP</a> · <a href="conseils.html" style="color:var(--faint);text-decoration:underline">Conseils</a> ·
   <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener" style="color:var(--faint);text-decoration:underline">Code source</a>
 </footer>
 <script>
