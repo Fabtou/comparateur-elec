@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fabtou.github.io/comparateur-elec/sitemap.xml
