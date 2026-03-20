@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guide HC/HP — Seuils de rentabilité par fournisseur</title>
+  <meta name="description" content="À partir de quel pourcentage d'heures creuses l'option HC/HP devient-elle plus intéressante que le tarif de base ? Calcul par fournisseur." />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#F7F5F0;--surface:#fff;--surface2:#F2EFE9;
+      --border:#E2DDD4;--border2:#C8C2B5;
+      --text:#1A1714;--muted:#7A7268;--faint:#B0A99E;
+      --accent:#185FA5;--accent-bg:#EBF3FC;
+      --green:#276749;--green-bg:#E8F5EE;
+      --red:#9B1C1C;--red-bg:#FEE2E2;
+      --amber:#92400E;--amber-bg:#FEF3C7;
+      --r:10px;--rs:6px;
+      --mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0F0F0F;--surface:#1A1A1A;--surface2:#222;
+        --border:#2E2E2E;--border2:#444;
+        --text:#F0EDE8;--muted:#8A8480;--faint:#555250;
+        --accent:#4A9EE8;--accent-bg:#0D2235;
+        --green:#34D399;--green-bg:#052E1C;
+        --red:#F87171;--red-bg:#2D0A0A;
+        --amber:#FCD34D;--amber-bg:#2D1F00;
+      }
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:100}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .logo-icon{width:30px;height:30px;overflow:visible}
+    h1{font-size:16px;font-weight:500;letter-spacing:-.02em}
+    .header-sub{font-size:12px;color:var(--muted)}
+    .back-btn{font-size:12px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);transition:all .12s}
+    .back-btn:hover{color:var(--text);border-color:var(--border2)}
+
+    main{max-width:1000px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+    .page-title{font-size:26px;font-weight:500;letter-spacing:-.02em;margin-bottom:.5rem}
+    .page-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.6;max-width:640px}
+
+    /* ── Simulator ── */
+    .sim{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.8rem;margin-bottom:2rem}
+    .sim-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+    .sim-row{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+    .sim-field{display:flex;flex-direction:column;gap:.4rem}
+    .sim-field label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .sim-field input[type=number]{font-family:var(--mono);font-size:20px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 36px 4px 0;outline:none;width:120px;-moz-appearance:textfield}
+    .sim-field input[type=number]::-webkit-outer-spin-button,
+    .sim-field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+    .sim-field input[type=number]:focus{border-bottom-color:var(--accent)}
+    .sim-field select{font-family:var(--mono);font-size:20px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 4px 4px 0;outline:none;cursor:pointer}
+    .input-suffix{font-size:13px;color:var(--muted);font-family:var(--mono);margin-left:-28px}
+
+    /* ── Explain box ── */
+    .explain{background:var(--accent-bg);border:1px solid var(--accent);border-radius:var(--r);padding:1rem 1.25rem;font-size:13px;color:var(--accent);line-height:1.6;margin-bottom:2rem}
+    .explain strong{font-weight:500}
+
+    /* ── Cards grid ── */
+    .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+
+    .hc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;transition:border-color .15s}
+    .hc-card:hover{border-color:var(--border2)}
+    .hc-card.na{opacity:.5}
+
+    .card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+    .card-provider{font-weight:500;font-size:14px}
+    .card-offer{font-size:11px;color:var(--muted);margin-top:1px}
+    .card-badge{font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap}
+    .badge-green{background:var(--green-bg);color:var(--green)}
+    .badge-gray{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+
+    /* Threshold bar */
+    .threshold-wrap{margin:.75rem 0}
+    .threshold-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+    .threshold-pct{font-family:var(--mono);font-size:20px;font-weight:500}
+    .threshold-pct.good{color:var(--green)}
+    .threshold-pct.ok{color:var(--amber)}
+    .threshold-pct.hard{color:var(--red)}
+    .threshold-hint{font-size:11px;color:var(--muted)}
+
+    .bar-track{height:8px;background:var(--surface2);border-radius:4px;position:relative;overflow:hidden}
+    .bar-fill{height:100%;border-radius:4px;transition:width .4s ease}
+    .bar-fill.good{background:var(--green)}
+    .bar-fill.ok{background:var(--amber)}
+    .bar-fill.hard{background:var(--red)}
+    .bar-cursor{position:absolute;top:-2px;width:3px;height:12px;background:var(--text);border-radius:2px;transform:translateX(-50%);transition:left .3s ease}
+
+    .card-detail{display:flex;gap:.75rem;margin-top:.75rem}
+    .detail-cell{flex:1;background:var(--surface2);border-radius:var(--rs);padding:.5rem .65rem}
+    .detail-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+    .detail-val{font-family:var(--mono);font-size:12px;font-weight:500}
+
+    .na-msg{font-size:12px;color:var(--faint);padding:.5rem 0}
+
+    /* ── Table ── */
+    .section-title{font-size:14px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:2rem 0 1rem}
+    .tscroll{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;background:var(--surface);min-width:600px}
+    thead th{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 14px;background:var(--surface2);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+    thead th:first-child{text-align:left}
+    thead th.th-c{text-align:center}
+    tbody tr{border-bottom:1px solid var(--border)}
+    tbody tr:last-child{border-bottom:none}
+    tbody tr:hover td{background:var(--surface2)}
+    td{padding:10px 14px;font-size:13px;text-align:right;vertical-align:middle;background:var(--surface)}
+    td:first-child{text-align:left}
+    .num{font-family:var(--mono);font-size:13px}
+    .pct-cell{font-family:var(--mono);font-size:14px;font-weight:500}
+    .pct-good{color:var(--green)}
+    .pct-ok{color:var(--amber)}
+    .pct-hard{color:var(--red)}
+    .na-cell{color:var(--faint);font-size:12px}
+
+    /* Mini bar in table */
+    .mini-bar{display:flex;align-items:center;gap:6px}
+    .mini-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;position:relative;overflow:hidden;min-width:60px}
+    .mini-fill{height:100%;border-radius:3px}
+    .mini-cursor{position:absolute;top:-1px;width:2px;height:7px;background:var(--text);border-radius:1px;transform:translateX(-50%)}
+
+    footer{text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border)}
+    footer a{color:var(--faint);text-decoration:underline}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .fade{animation:fadeUp .3s ease both}
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">
+    <div class="logo-icon"><img src="icon-192.png" width="30" height="30" alt="Logo" style="border-radius:4px" /></div>
+    <div><h1>Comparateur électricité 🐅</h1><div class="header-sub">France · particuliers</div></div>
+  </a>
+  <a href="index.html" class="back-btn">← Retour au comparateur</a>
+</header>
+
+<main>
+  <div class="fade">
+    <div class="page-title">Guide Heures Creuses / Heures Pleines</div>
+    <div class="page-sub">À partir de quel pourcentage de consommation en heures creuses l'option HC/HP devient-elle plus avantageuse que le tarif de base ? Ce seuil varie selon chaque fournisseur et votre consommation annuelle.</div>
+  </div>
+
+  <!-- Simulator -->
+  <div class="sim fade" style="animation-delay:.04s">
+    <div class="sim-title">Votre profil</div>
+    <div class="sim-row">
+      <div class="sim-field">
+        <label>Consommation annuelle</label>
+        <div style="display:flex;align-items:baseline;gap:4px">
+          <input type="number" id="inp-conso" min="500" max="50000" step="100" value="5700" />
+          <span class="input-suffix">kWh</span>
+        </div>
+      </div>
+      <div class="sim-field">
+        <label>Puissance compteur</label>
+        <select id="sel-kva">
+          <option value="3">3 kVA</option>
+          <option value="6" selected>6 kVA</option>
+          <option value="9">9 kVA</option>
+          <option value="12">12 kVA</option>
+          <option value="15">15 kVA</option>
+        </select>
+      </div>
+      <div class="sim-field" style="flex:1;min-width:200px">
+        <label>Ma part en HC actuelle</label>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="inp-hc" min="0" max="80" step="1" value="30"
+            style="font-family:var(--mono);font-size:20px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 0 4px;outline:none;width:52px;text-align:right;-moz-appearance:textfield;flex-shrink:0" />
+          <span style="font-family:var(--mono);font-size:13px;color:var(--muted)">%</span>
+          <input type="range" id="sl-hc" min="0" max="80" step="1" value="30"
+            style="-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:2px;background:var(--border);outline:none;border:none;cursor:pointer" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explain fade" style="animation-delay:.06s" id="explain-box">
+    Chargement…
+  </div>
+
+  <!-- Cards -->
+  <div class="section-title">Par fournisseur — vue visuelle</div>
+  <div class="cards-grid fade" id="cards-grid" style="animation-delay:.08s"></div>
+
+  <!-- Table -->
+  <div class="section-title">Récapitulatif complet</div>
+  <div class="tscroll fade" style="animation-delay:.1s">
+    <table>
+      <thead>
+        <tr>
+          <th>Fournisseur / Offre</th>
+          <th>Seuil HC rentable</th>
+          <th>kWh base</th>
+          <th id="th-moy">kWh moy. (30% HC)</th>
+          <th>kWh HC</th>
+          <th>kWh HP</th>
+          <th>Économie max</th>
+          <th class="th-c">Vert</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:1.5rem;font-size:11px;color:var(--faint);line-height:1.7">
+    * Le seuil de rentabilité est calculé en trouvant le % HC à partir duquel le coût HC/HP = coût Base, toutes choses égales (même fournisseur, même offre, même consommation, même abonnement). En dessous de ce seuil, l'option Base est moins chère. La barre montre votre position actuelle (trait noir) par rapport au seuil. Tarifs TTC 6 kVA mars 2026.
+  </div>
+</main>
+
+<footer>
+  <a href="index.html">← Retour au comparateur</a> ·
+  Créé par Fabien 🐅 · Données mises à jour chaque semaine ·
+  <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener">Code source</a>
+</footer>
+
+<script>
+let data = null;
+let conso = 5700, kva = 6, myHcPct = 0.30;
+
+// ── Load ──────────────────────────────────────────────────────────────
+async function load() {
+  try {
+    const r = await fetch('./tarifs.json?t=' + Date.now());
+    data = await r.json();
+
+    // Restore prefs
+    try {
+      const c = parseInt(localStorage.getItem('elec_conso'));
+      const k = parseInt(localStorage.getItem('elec_kva'));
+      const h = parseInt(localStorage.getItem('elec_hc'));
+      if (c >= 100 && c <= 50000) conso = c;
+      if ([3,6,9,12,15].includes(k)) kva = k;
+      if (h >= 0 && h <= 80) myHcPct = h / 100;
+    } catch(e) {}
+
+    document.getElementById('inp-conso').value = conso;
+    document.getElementById('sel-kva').value = kva;
+    document.getElementById('inp-hc').value = Math.round(myHcPct * 100);
+    document.getElementById('sl-hc').value = Math.round(myHcPct * 100);
+    render();
+  } catch(e) {
+    document.getElementById('explain-box').textContent = 'Erreur de chargement : ' + e.message;
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────
+function aboForKva(base) {
+  if (!data.kva_abo_annuel) return base;
+  const t = data.kva_abo_annuel[String(kva)];
+  const b = data.kva_abo_annuel['6'] || 187.80;
+  return t ? base * (t / b) : base;
+}
+
+// Find seuil: % HC at which HC/HP cost = Base cost (binary search)
+function findSeuil(baseOffer, hcOffer) {
+  if (!hcOffer || !hcOffer.kwh_hc || !hcOffer.kwh_hp) return null;
+  const abo = aboForKva(baseOffer.abo_annuel);
+  const costBase = baseOffer.kwh_base * conso + abo;
+
+  // At hcPct: costHC = (kwh_hc * hcPct + kwh_hp * (1-hcPct)) * conso + abo
+  // costHC = costBase  →  solve for hcPct
+  // kwh_hc * hcPct + kwh_hp - kwh_hp * hcPct = costBase/conso - abo/conso
+  // hcPct * (kwh_hc - kwh_hp) = (costBase - abo) / conso - kwh_hp
+  // hcPct = ((costBase - abo) / conso - kwh_hp) / (kwh_hc - kwh_hp)
+
+  const rhs = (costBase - abo) / conso;
+  const seuil = (rhs - hcOffer.kwh_hp) / (hcOffer.kwh_hc - hcOffer.kwh_hp);
+  if (seuil < 0 || seuil > 1) return null;
+  return Math.round(seuil * 1000) / 10; // e.g. 27.3
+}
+
+function pctClass(seuil) {
+  if (seuil === null) return 'na';
+  if (seuil <= 25) return 'good';
+  if (seuil <= 35) return 'ok';
+  return 'hard';
+}
+
+function pctLabel(seuil) {
+  if (seuil === null) return 'Non disponible';
+  if (seuil <= 25) return 'Facile à atteindre';
+  if (seuil <= 35) return 'Atteignable';
+  return 'Difficile';
+}
+
+function maxSaving(baseOffer, hcOffer) {
+  if (!hcOffer || !hcOffer.kwh_hc) return null;
+  const abo = aboForKva(baseOffer.abo_annuel);
+  const costBase = baseOffer.kwh_base * conso + abo;
+  // At 80% HC (maximum)
+  const costHC80 = (hcOffer.kwh_hc * 0.8 + hcOffer.kwh_hp * 0.2) * conso + abo;
+  return Math.round(costBase - costHC80);
+}
+
+// ── Render ────────────────────────────────────────────────────────────
+function render() {
+  // Group base offers (non-TRV, actif)
+  const baseOffers = data.offres.filter(o =>
+    o.mode === 'base' && !o.is_trv && o.actif !== false
+  );
+
+  // Match each base offer with its HC counterpart
+  const pairs = baseOffers.map(base => {
+    const hc = data.offres.find(o =>
+      o.fournisseur === base.fournisseur &&
+      o.offre === base.offre &&
+      o.mode === 'hc' &&
+      !o.hc_indisponible
+    );
+    const seuil = findSeuil(base, hc);
+    return { base, hc, seuil };
+  }).sort((a, b) => {
+    if (a.seuil === null && b.seuil === null) return 0;
+    if (a.seuil === null) return 1;
+    if (b.seuil === null) return -1;
+    return a.seuil - b.seuil;
+  });
+
+  // Explain box
+  const myPct = Math.round(myHcPct * 100);
+  const aboveThreshold = pairs.filter(p => p.seuil !== null && myPct >= p.seuil);
+  const belowThreshold = pairs.filter(p => p.seuil !== null && myPct < p.seuil);
+  document.getElementById('explain-box').innerHTML = `
+    Avec <strong>${myPct}% en heures creuses</strong> et <strong>${conso.toLocaleString('fr-FR')} kWh/an</strong> :
+    l'option HC/HP est rentable chez <strong>${aboveThreshold.length} fournisseur${aboveThreshold.length > 1 ? 's' : ''}</strong>
+    (${aboveThreshold.map(p => p.base.fournisseur).filter((v,i,a) => a.indexOf(v)===i).join(', ') || '—'}).
+    ${belowThreshold.length > 0
+      ? `Il vous faudrait atteindre <strong>${Math.min(...belowThreshold.filter(p=>p.seuil!==null).map(p=>p.seuil))}%</strong> minimum pour que la première offre devienne rentable.`
+      : ''}
+  `;
+
+  // Cards
+  document.getElementById('cards-grid').innerHTML = pairs.map(({ base, hc, seuil }) => {
+    const cls = pctClass(seuil);
+    const barPct = seuil !== null ? Math.min(seuil, 80) : 0;
+    const cursorLeft = Math.min(myHcPct * 100, 80);
+    const isAbove = seuil !== null && myHcPct * 100 >= seuil;
+    const saving = maxSaving(base, hc);
+
+    return `<div class="hc-card ${seuil === null ? 'na' : ''}">
+      <div class="card-header">
+        <div>
+          <div class="card-provider">${base.fournisseur}</div>
+          <div class="card-offer">${base.offre}</div>
+        </div>
+        ${base.vert ? `<span class="card-badge badge-green">✓ verte</span>` : `<span class="card-badge badge-gray">standard</span>`}
+      </div>
+
+      ${seuil === null
+        ? `<div class="na-msg">Option HC/HP non disponible pour cette offre.</div>`
+        : `<div class="threshold-wrap">
+          <div class="threshold-label">
+            <div>
+              <span class="threshold-pct ${cls}">${seuil}%</span>
+              <span style="font-size:11px;color:var(--muted);margin-left:6px">${pctLabel(seuil)}</span>
+            </div>
+            <span style="font-size:11px;color:${isAbove ? 'var(--green)' : 'var(--muted)'}">
+              ${isAbove ? '✓ Rentable pour vous' : `Il vous faut +${(seuil - myHcPct*100).toFixed(0)}%`}
+            </span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill ${cls}" style="width:${barPct/80*100}%"></div>
+            <div class="bar-cursor" style="left:${cursorLeft/80*100}%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--faint);font-family:var(--mono);margin-top:3px">
+            <span>0%</span><span>seuil ${seuil}%</span><span>80%</span>
+          </div>
+        </div>
+        <div class="card-detail">
+          <div class="detail-cell">
+            <div class="detail-label">kWh moyen (à ${Math.round(myHcPct*100)}% HC)</div>
+            <div class="detail-val" style="color:var(--accent)">${(hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct)).toFixed(4)} €</div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">vs kWh base</div>
+            <div class="detail-val" style="color:${(hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct)) < base.kwh_base ? 'var(--green)' : 'var(--red)'}">
+              ${((hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct) - base.kwh_base) * 10000).toFixed(1) > 0 ? '+' : ''}${((hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct) - base.kwh_base) * 10000).toFixed(1)} cts
+            </div>
+          </div>
+          <div class="detail-cell">
+            <div class="detail-label">kWh HC / HP</div>
+            <div class="detail-val" style="font-size:10px">${hc.kwh_hc.toFixed(4)} / ${hc.kwh_hp.toFixed(4)}</div>
+          </div>
+        </div>`
+      }
+    </div>`;
+  }).join('');
+
+  // Update dynamic table header
+  const thMoy = document.getElementById('th-moy');
+  if (thMoy) thMoy.textContent = `kWh moy. (${Math.round(myHcPct*100)}% HC)`;
+
+  // Table
+  document.getElementById('table-body').innerHTML = pairs.map(({ base, hc, seuil }) => {
+    const cls = pctClass(seuil);
+    const saving = maxSaving(base, hc);
+    const barPct = seuil !== null ? Math.min(seuil, 80) / 80 * 100 : 0;
+    const cursorLeft = Math.min(myHcPct * 100, 80) / 80 * 100;
+
+    return `<tr>
+      <td>
+        <div style="font-weight:500;font-size:13px">${base.fournisseur}</div>
+        <div style="font-size:11px;color:var(--muted)">${base.offre}</div>
+      </td>
+      <td style="text-align:left;min-width:160px">
+        ${seuil === null
+          ? `<span class="na-cell">Non disponible</span>`
+          : `<div class="mini-bar">
+              <span class="pct-cell pct-${cls}" style="min-width:38px">${seuil}%</span>
+              <div class="mini-track">
+                <div class="mini-fill ${cls}" style="width:${barPct}%;background:${cls==='good'?'var(--green)':cls==='ok'?'var(--amber)':'var(--red)'}"></div>
+                <div class="mini-cursor" style="left:${cursorLeft}%"></div>
+              </div>
+            </div>`
+        }
+      </td>
+      <td><span class="num">${base.kwh_base.toFixed(4)} €</span></td>
+      <td>${hc && hc.kwh_hc ? (() => {
+        const moy = hc.kwh_hc * myHcPct + hc.kwh_hp * (1 - myHcPct);
+        const better = moy < base.kwh_base;
+        return `<span class="num" style="color:${better ? 'var(--green)' : 'var(--red)'}">${moy.toFixed(4)} €</span>`;
+      })() : '<span class="na-cell">—</span>'}</td>
+      <td>${hc && hc.kwh_hc ? `<span class="num">${hc.kwh_hc.toFixed(4)} €</span>` : '<span class="na-cell">—</span>'}</td>
+      <td>${hc && hc.kwh_hp ? `<span class="num">${hc.kwh_hp.toFixed(4)} €</span>` : '<span class="na-cell">—</span>'}</td>
+      <td>${saving !== null ? `<span class="num" style="color:${saving>0?'var(--green)':'var(--red)'}">${saving>0?'−':'+'}${Math.abs(saving)} €</span>` : '<span class="na-cell">—</span>'}</td>
+      <td style="text-align:center">${base.vert ? `<span style="font-size:11px;color:var(--green)">✓</span>` : '<span style="color:var(--faint);font-size:11px">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Events ────────────────────────────────────────────────────────────
+document.getElementById('inp-conso').addEventListener('input', e => {
+  const v = parseInt(e.target.value);
+  if (v >= 100 && v <= 50000) { conso = v; render(); }
+});
+document.getElementById('sel-kva').addEventListener('change', e => {
+  kva = parseInt(e.target.value); render();
+});
+
+const slHC  = document.getElementById('sl-hc');
+const inpHC = document.getElementById('inp-hc');
+function setHC(val) {
+  val = Math.max(0, Math.min(80, Math.round(val)));
+  myHcPct = val / 100;
+  slHC.value = val; inpHC.value = val;
+  render();
+}
+slHC.addEventListener('input', e => setHC(parseInt(e.target.value)));
+inpHC.addEventListener('input', e => { const v = parseInt(e.target.value); if (!isNaN(v)) setHC(v); });
+inpHC.addEventListener('blur',  e => { const v = parseInt(e.target.value); setHC(isNaN(v) ? 0 : v); });
+
+load();
+</script>
+</body>
+</html>
