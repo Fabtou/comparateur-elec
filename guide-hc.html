@@ -528,7 +528,11 @@ function render() {
 // ── Events ────────────────────────────────────────────────────────────
 document.getElementById('inp-conso').addEventListener('input', e => {
   const v = parseInt(e.target.value);
-  if (v >= 100 && v <= 50000) { conso = v; render(); }
+  if (v >= 100 && v <= 50000) {
+    conso = v;
+    try { localStorage.setItem('elec_conso', v); } catch(e) {}
+    if (data) render();
+  }
 });
 
 const slHC  = document.getElementById('sl-hc');
@@ -537,7 +541,8 @@ function setHC(val) {
   val = Math.max(0, Math.min(80, Math.round(val)));
   myHcPct = val / 100;
   slHC.value = val; inpHC.value = val;
-  render();
+  try { localStorage.setItem('elec_hc', val); } catch(e) {}
+  if (data) render();
 }
 slHC.addEventListener('input', e => setHC(parseInt(e.target.value)));
 inpHC.addEventListener('input', e => { const v = parseInt(e.target.value); if (!isNaN(v)) setHC(v); });
