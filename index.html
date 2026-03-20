@@ -47,7 +47,7 @@
 
     .sim{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem 1.8rem;margin-bottom:1.25rem}
     .sim-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
-    .sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem 2rem;align-items:start}
+    .sim-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem 2rem;align-items:start}.sim-grid .sim-field{display:flex;flex-direction:column}
     .sim-field label{display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
     .input-wrap{position:relative}
     .input-wrap input[type=number]{width:100%;font-family:var(--mono);font-size:22px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 40px 4px 0;outline:none;-moz-appearance:textfield}
@@ -178,7 +178,7 @@
 <body>
 <header>
   <div class="logo">
-    <div class="logo-icon" style="background:none;overflow:visible"><img src="favicon-32x32.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
+    <div class="logo-icon" style="background:none;overflow:visible"><img src="icon-192.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
     <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers</div></div>
   </div>
   <div id="badge-date">Chargement…</div>
@@ -214,7 +214,6 @@
           <span style="font-family:var(--mono);font-size:13px;color:var(--muted);flex-shrink:0">%</span>
           <input type="range" id="sl-hc" min="0" max="80" step="1" value="30" />
         </div>
-        <div class="slider-labels" style="padding-left:62px"><span>0%</span><span>40%</span><span>80%</span></div>
         <div class="sim-hint">Seuil de rentabilité HC/HP ≈ <strong>25–30%</strong>. En dessous, l'option base est souvent meilleure.</div>
       </div>
     </div>
