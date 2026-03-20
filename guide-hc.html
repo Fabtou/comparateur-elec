@@ -285,7 +285,7 @@
           <th id="th-moy">kWh moy. (30% HC)</th>
           <th>kWh HC</th>
           <th>kWh HP</th>
-          <th>Économie max</th>
+          <th id="th-saving">Économie (30% HC)</th>
           <th class="th-c">Vert</th>
         </tr>
       </thead>
@@ -374,13 +374,12 @@ function pctLabel(seuil) {
   return 'Difficile';
 }
 
-function maxSaving(baseOffer, hcOffer) {
+function calcSaving(baseOffer, hcOffer) {
   if (!hcOffer || !hcOffer.kwh_hc) return null;
   const abo = aboForKva(baseOffer.abo_annuel);
   const costBase = baseOffer.kwh_base * conso + abo;
-  // At 80% HC (maximum)
-  const costHC80 = (hcOffer.kwh_hc * 0.8 + hcOffer.kwh_hp * 0.2) * conso + abo;
-  return Math.round(costBase - costHC80);
+  const costHC = (hcOffer.kwh_hc * myHcPct + hcOffer.kwh_hp * (1 - myHcPct)) * conso + abo;
+  return Math.round(costBase - costHC);
 }
 
 // ── Render ────────────────────────────────────────────────────────────
@@ -426,7 +425,7 @@ function render() {
     const barPct = seuil !== null ? Math.min(seuil, 80) : 0;
     const cursorLeft = Math.min(myHcPct * 100, 80);
     const isAbove = seuil !== null && myHcPct * 100 >= seuil;
-    const saving = maxSaving(base, hc);
+    const saving = calcSaving(base, hc);
 
     return `<div class="hc-card ${seuil === null ? 'na' : ''}">
       <div class="card-header">
@@ -483,14 +482,16 @@ function render() {
     </div>`;
   }).join('');
 
-  // Update dynamic table header
+  // Update dynamic table headers
   const thMoy = document.getElementById('th-moy');
+  const thSav = document.getElementById('th-saving');
+  if (thSav) thSav.textContent = `Économie (${Math.round(myHcPct*100)}% HC)`;
   if (thMoy) thMoy.textContent = `kWh moy. (${Math.round(myHcPct*100)}% HC)`;
 
   // Table
   document.getElementById('table-body').innerHTML = pairs.map(({ base, hc, seuil }) => {
     const cls = pctClass(seuil);
-    const saving = maxSaving(base, hc);
+    const saving = calcSaving(base, hc);
     const barPct = seuil !== null ? Math.min(seuil, 80) / 80 * 100 : 0;
     const cursorLeft = Math.min(myHcPct * 100, 80) / 80 * 100;
 
