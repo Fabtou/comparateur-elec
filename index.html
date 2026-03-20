@@ -198,14 +198,13 @@
 
       <div class="sim-field">
         <label>Part en heures creuses</label>
-        <div class="hc-row">
-          <input type="number" id="inp-hc" min="0" max="80" step="1" value="30" />
-          <span class="hc-unit">%</span>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:.5rem">
+          <input type="number" id="inp-hc" min="0" max="80" step="1" value="30"
+            style="font-family:var(--mono);font-size:22px;color:var(--text);background:transparent;border:none;border-bottom:2px solid var(--border2);padding:2px 0 4px;outline:none;width:52px;text-align:right;-moz-appearance:textfield;flex-shrink:0" />
+          <span style="font-family:var(--mono);font-size:13px;color:var(--muted);flex-shrink:0">%</span>
+          <input type="range" id="sl-hc" min="0" max="80" step="1" value="30" style="flex:1;margin:0" />
         </div>
-        <div class="slider-wrap">
-          <input type="range" id="sl-hc" min="0" max="80" step="1" value="30" />
-          <div class="slider-labels"><span>0%</span><span>40%</span><span>80%</span></div>
-        </div>
+        <div class="slider-labels" style="padding-left:62px"><span>0%</span><span>40%</span><span>80%</span></div>
         <div class="sim-hint">Seuil de rentabilité HC/HP ≈ <strong>25–30%</strong>. En dessous, l'option base est souvent meilleure.</div>
       </div>
 
@@ -347,22 +346,33 @@ async function load() {
 }
 
 // ── Cost helpers ────────────────────────────────────────────────────────
+// Get kVA-adjusted annual subscription
+function aboForKva(baseAbo) {
+  if (!data.kva_abo_annuel) return baseAbo;
+  const kvaAbo = data.kva_abo_annuel[String(kva)];
+  const kvaAbo6 = data.kva_abo_annuel['6'] || 187.80;
+  if (!kvaAbo) return baseAbo;
+  return baseAbo * (kvaAbo / kvaAbo6);
+}
+
 // Returns effective annual cost for an offer row, or null if N/A
 function offreCost(o) {
   if (o.hc_indisponible) return null;
+  const abo = aboForKva(o.abo_annuel);
   if (o.mode === 'hc' && o.kwh_hc != null && o.kwh_hp != null) {
     const kwh = o.kwh_hc * hcPct + o.kwh_hp * (1 - hcPct);
-    return kwh * conso + o.abo_annuel;
+    return kwh * conso + abo;
   }
-  return o.kwh_base * conso + o.abo_annuel;
+  return o.kwh_base * conso + abo;
 }
 
 function trvCost() {
   const t = data.trv;
+  const abo = aboForKva(t.abo_annuel);
   if (hcPct >= 0.25) {
-    return (t.kwh_hc * hcPct + t.kwh_hp * (1 - hcPct)) * conso + t.abo_annuel;
+    return (t.kwh_hc * hcPct + t.kwh_hp * (1 - hcPct)) * conso + abo;
   }
-  return t.kwh_base * conso + t.abo_annuel;
+  return t.kwh_base * conso + abo;
 }
 
 // ── Render ──────────────────────────────────────────────────────────────
@@ -483,7 +493,7 @@ function render() {
         <td><span class="num">${o.kwh_base.toFixed(4)} €</span></td>
         <td>${hcCell}</td>
         <td>${hpCell}</td>
-        <td><span class="num">${o.abo_annuel.toFixed(2)} €</span></td>
+        <td><span class="num">${aboForKva(o.abo_annuel).toFixed(2)} €</span><div class="num-sub">/an · ${kva} kVA</div></td>
         <td>${costHtml}</td>
         <td>${savHtml}</td>
         <td style="text-align:center">${vertHtml}</td>
