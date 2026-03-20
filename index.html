@@ -11,6 +11,11 @@
   <meta property="og:description" content="Comparez les tarifs de tous les fournisseurs français, personnalisé selon votre profil." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://fabtou.github.io/comparateur-elec/" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -173,7 +178,7 @@
 <body>
 <header>
   <div class="logo">
-    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M13 2L4.09 12.26a1 1 0 00.89 1.74H11v8l8.91-10.26a1 1 0 00-.89-1.74H13V2z"/></svg></div>
+    <div class="logo-icon" style="background:none;overflow:visible"><img src="favicon-32x32.png" width="32" height="32" alt="Logo" style="display:block;border-radius:4px" /></div>
     <div><h1>Comparateur électricité</h1><div class="header-sub">France · particuliers</div></div>
   </div>
   <div id="badge-date">Chargement…</div>
@@ -287,6 +292,10 @@
     <div class="guide-tip"><strong>Notre lecture du marché (mars 2026)</strong> — Les tarifs ont baissé deux fois consécutives. Dans ce contexte, une offre fixe à −13 à −17% sous le TRV (Alpiq, Ekwateur) offre le meilleur rapport sécurité/économies. L'option HC/HP n'est rentable qu'à partir de 25–30% de conso en heures creuses.</div>
   </section>
 </main>
+
+<footer style="text-align:center;padding:1.5rem;font-size:12px;color:var(--faint);border-top:1px solid var(--border);margin-top:0">
+  Créé par Fabien 🐅 · Données mises à jour chaque semaine · <a href="https://github.com/Fabtou/comparateur-elec" target="_blank" rel="noopener" style="color:var(--faint);text-decoration:underline">Code source</a>
+</footer>
 
 <script>
 // ── State ──────────────────────────────────────────────────────────────
