@@ -2,9 +2,8 @@ name: Mise à jour hebdomadaire des tarifs
 
 on:
   schedule:
-    # Chaque lundi à 06h00 UTC (juste après les mises à jour du 1er du mois)
     - cron: "0 6 * * 1"
-  workflow_dispatch: # déclenchement manuel possible
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -22,6 +21,7 @@ jobs:
           python-version: "3.12"
 
       - name: Scrape tarifs
+        id: scrape
         run: python scripts/scrape_tarifs.py
 
       - name: Vérifier les changements
@@ -38,3 +38,16 @@ jobs:
           git add tarifs.json
           git commit -m "chore: mise à jour tarifs électricité — $DATE"
           git push
+
+      - name: Alerte si échec
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Scraping tarifs échoué — ${new Date().toLocaleDateString('fr-FR')}`,
+              body: `Le workflow de mise à jour des tarifs a échoué.\n\n[Voir les logs](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nVérifiez que les sites sources (Selectra, Kelwatt) n'ont pas modifié leur structure HTML.`,
+              labels: ['bug', 'automated']
+            });
