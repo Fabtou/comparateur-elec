@@ -390,58 +390,40 @@ function render() {
     return true;
   });
 
-  // Group into pairs {base, hc}, keyed by fournisseur+offre
-  const pairMap = {};
-  offres.forEach(o => {
-    const k = o.fournisseur + '§' + o.offre;
-    if (!pairMap[k]) pairMap[k] = {};
-    pairMap[k][o.mode] = o;
+  // Sort each row individually — every line (base AND hc) is sorted independently
+  // so that e.g. an HC/HP row can appear above a Base row from another provider
+  const allRows = offres.map(o => {
+    const cost = offreCost(o);
+    return {
+      o,
+      sortCost: cost ?? Infinity,
+      sortKwh:  o.kwh_base,
+      sortAbo:  o.abo_annuel,
+      sortSav:  cost !== null ? trv - cost : -Infinity
+    };
   });
 
-  // Build sortable list — sort value is the RELEVANT row cost given current hcPct
-  // If hcPct >= 0.25: sort by HC row cost (if available), else base cost
-  // If hcPct < 0.25: sort by base cost
-  const pairList = Object.values(pairMap).map(pair => {
-    const base = pair['base'];
-    const hc   = pair['hc'];
-    let sortCost, sortKwh, sortAbo, sortSav;
-
-    const useHC = hcPct >= 0.25 && hc && !hc.hc_indisponible && hc.kwh_hc != null;
-    const refRow = useHC ? hc : base;
-
-    sortCost = refRow ? offreCost(refRow) : Infinity;
-    sortKwh  = base ? base.kwh_base : Infinity;
-    sortAbo  = base ? base.abo_annuel : Infinity;
-    sortSav  = sortCost !== null && isFinite(sortCost) ? trv - sortCost : -Infinity;
-
-    return { pair, sortCost: sortCost ?? Infinity, sortKwh, sortAbo, sortSav };
-  });
-
-  pairList.sort((a, b) => {
+  allRows.sort((a, b) => {
     let va, vb;
-    if (sortCol === 'cost')     { va = a.sortCost; vb = b.sortCost; }
-    else if (sortCol === 'kwh_base') { va = a.sortKwh; vb = b.sortKwh; }
-    else if (sortCol === 'abo') { va = a.sortAbo; vb = b.sortAbo; }
-    else if (sortCol === 'sav') { va = a.sortSav; vb = b.sortSav; return (vb - va) * sortDir; }
+    if      (sortCol === 'cost')     { va = a.sortCost; vb = b.sortCost; }
+    else if (sortCol === 'kwh_base') { va = a.sortKwh;  vb = b.sortKwh; }
+    else if (sortCol === 'abo')      { va = a.sortAbo;  vb = b.sortAbo; }
+    else if (sortCol === 'sav')      { va = a.sortSav;  vb = b.sortSav; return (vb - va) * sortDir; }
     else { va = 0; vb = 0; }
     return (va - vb) * sortDir;
   });
 
-  // Find best non-TRV cost for "Meilleur prix" badge
-  const bestNonTrv = pairList
-    .filter(p => p.pair['base'] && !p.pair['base'].is_trv)
-    .map(p => p.sortCost)
+  // Find global best cost (non-TRV, non-NA)
+  const bestNonTrv = allRows
+    .filter(r => !r.o.is_trv && !r.o.hc_indisponible)
+    .map(r => r.sortCost)
     .filter(c => isFinite(c));
   const globalBest = Math.min(...bestNonTrv);
 
-  // Render rows
+  // Render rows — each row independently
   let rows = '';
-  pairList.forEach(({ pair }) => {
-    const base = pair['base'];
-    const hc   = pair['hc'];
-
-    [base, hc].forEach(o => {
-      if (!o) return;
+  allRows.forEach(({ o }) => {
+    if (!o) return;
       const cost   = offreCost(o);
       const saving = cost !== null ? trv - cost : null;
       const isTRV  = !!o.is_trv;
@@ -506,7 +488,6 @@ function render() {
         <td>${savHtml}</td>
         <td style="text-align:center">${vertHtml}</td>
       </tr>`;
-    });
   });
 
   document.getElementById('tbody').innerHTML = rows ||
